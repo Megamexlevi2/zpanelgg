@@ -208,15 +208,15 @@
             const copyButton = document.createElement("button");
             copyButton.classList.add("copied-button");
             copyButton.textContent = "Copiar Código";
-            copyButton.onclick = () => copyToClipboard(code);
+            copyButton.onclick = () => copyToClipboard(code); // Copiar apenas o código
             codeDiv.appendChild(copyButton);
 
             chatBox.appendChild(codeDiv);
             chatBox.scrollTop = chatBox.scrollHeight;
         }
 
-        function copyToClipboard(text) {
-            navigator.clipboard.writeText(text).then(() => alert("Código copiado!"));
+        function copyToClipboard(code) {
+            navigator.clipboard.writeText(code).then(() => alert("Código copiado!"));
         }
     </script>
 </body>
