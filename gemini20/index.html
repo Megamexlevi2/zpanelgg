@@ -4,16 +4,87 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Code GPT</title>
-    <link rel="stylesheet" href="gemini20/styles.css">
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box;font-family:Arial,sans-serif;}
+        body{background:#343541;color:#fff;display:flex;justify-content:center;align-items:center;height:100vh;}
+        .c{width:90%;max-width:800px;background:#40414F;border-radius:10px;display:flex;flex-direction:column;height:80vh;overflow:hidden;}
+        .b{flex:1;padding:20px;overflow-y:auto;}
+        .i{display:flex;padding:10px;border-top:1px solid #555;}
+        textarea{flex:1;background:#555;border:none;color:#fff;padding:10px;border-radius:5px;resize:none;height:40px;}
+        button{background:#19C37D;border:none;color:white;padding:10px 15px;margin-left:10px;border-radius:5px;cursor:pointer;font-size:18px;}
+        button:hover{background:#16A866;}
+        .m{margin-bottom:10px;padding:10px;border-radius:5px;position:relative;}
+        .u{background:#007AFF;align-self:flex-end;text-align:right;}
+        .bot{background:#444;align-self:flex-start;text-align:left;position:relative;}
+        .c-btn{position:absolute;top:5px;right:5px;background:#19C37D;border:none;color:white;padding:5px 10px;border-radius:3px;cursor:pointer;font-size:14px;display:none;}
+        .bot:hover .c-btn{display:block;}
+        .t{font-style:italic;color:#bbb;}
+    </style>
 </head>
 <body>
-    <div class="chat-container">
-        <div class="chat-box" id="chat-box"></div>
-        <div class="input-container">
-            <textarea id="prompt" placeholder="Digite sua pergunta..."></textarea>
-            <button onclick="generateCode()">➤</button>
+    <div class="c">
+        <div class="b" id="b"></div>
+        <div class="i">
+            <textarea id="p" placeholder="Digite sua pergunta..."></textarea>
+            <button onclick="g()">➤</button>
         </div>
     </div>
-    <script src="gemini20/main.js"></script>
+    <script>
+        const eKey="QUl6YVN5QmxveXo1cnpoNVVJNExrSjZWWUU5bmRUd0x0Y2FXeEFJ";
+        function dKey(){return atob(eKey);}
+        async function g(){
+            const p=document.getElementById("p").value,b=document.getElementById("b");
+            if(!p)return;
+            a("Você",p,"u");
+            document.getElementById("p").value="";
+            const tMsg=a("Code GPT","Digitando...","bot t");
+            const res=await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${dKey()}`,{
+                method:"POST",headers:{"Content-Type":"application/json"},
+                body:JSON.stringify({contents:[{parts:[{text:p}]}]})
+            });
+            const data=await res.json();
+            b.removeChild(tMsg);
+            const msg=data.candidates&&data.candidates.length>0?data.candidates[0].content.parts[0].text:"Erro ao gerar código.";
+            aTyping("Code GPT",msg,"bot",true);
+        }
+        function a(n,t,c){
+            const b=document.getElementById("b"),m=document.createElement("div");
+            m.classList.add("m",c);
+            m.innerHTML=`<strong>${n}:</strong> <span class="message-text">${t}</span>`;
+            b.appendChild(m);
+            b.scrollTop=b.scrollHeight;
+            return m;
+        }
+        function aTyping(n,t,c,isBot=false){
+            const b=document.getElementById("b"),m=document.createElement("div");
+            m.classList.add("m",c);
+            const s=document.createElement("strong");
+            s.innerText=n+": ";
+            const msgText=document.createElement("span");
+            msgText.classList.add("message-text");
+            m.appendChild(s);
+            m.appendChild(msgText);
+            b.appendChild(m);
+            b.scrollTop=b.scrollHeight;
+            let i=0;
+            function type(){
+                if(i<t.length){
+                    msgText.innerHTML+=t.charAt(i);
+                    i++;
+                    setTimeout(type,10);
+                }else if(isBot){
+                    const cBtn=document.createElement("button");
+                    cBtn.innerText="Copiar Código";
+                    cBtn.classList.add("c-btn");
+                    cBtn.onclick=()=>copyToClipboard(t);
+                    m.appendChild(cBtn);
+                }
+            }
+            type();
+        }
+        function copyToClipboard(t){
+            navigator.clipboard.writeText(t).then(()=>alert("Código copiado!"));
+        }
+    </script>
 </body>
 </html>
