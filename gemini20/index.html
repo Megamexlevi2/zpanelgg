@@ -111,11 +111,6 @@
         .chat-message:hover .copied-button {
             display: block;
         }
-        .typing-indicator {
-            font-style: italic;
-            color: #aaa;
-            margin-top: 10px;
-        }
     </style>
 </head>
 <body>
@@ -141,8 +136,6 @@
             appendMessage("Você", prompt, "user-message");
             document.getElementById("prompt").value = "";
 
-            const typingMessage = appendMessage("Code GPT", "Digitando...", "bot-message typing-indicator");
-
             const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${decodeAPIKey()}`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
@@ -150,10 +143,8 @@
             });
 
             const data = await response.json();
-            chatBox.removeChild(typingMessage);
-
             const message = data.candidates && data.candidates.length > 0 ? data.candidates[0].content.parts[0].text : "Erro ao gerar código.";
-            appendMessageTyping("Code GPT", message, "bot-message");
+            appendMessage("Code GPT", message, "bot-message");
         }
 
         function appendMessage(name, text, cssClass) {
@@ -164,36 +155,6 @@
             chatBox.appendChild(messageDiv);
             chatBox.scrollTop = chatBox.scrollHeight;
             return messageDiv;
-        }
-
-        function appendMessageTyping(name, text, cssClass) {
-            const chatBox = document.getElementById("chat-box");
-            const messageDiv = document.createElement("div");
-            messageDiv.classList.add("chat-message", cssClass);
-            const strong = document.createElement("strong");
-            strong.innerText = name + ": ";
-            const messageText = document.createElement("span");
-            messageText.classList.add("message-text");
-            messageDiv.appendChild(strong);
-            messageDiv.appendChild(messageText);
-            chatBox.appendChild(messageDiv);
-            chatBox.scrollTop = chatBox.scrollHeight;
-
-            let index = 0;
-            function type() {
-                if (index < text.length) {
-                    messageText.innerHTML += text.charAt(index);
-                    index++;
-                    setTimeout(type, 50);
-                } else {
-                    const copyButton = document.createElement("button");
-                    copyButton.innerText = "Copiar Código";
-                    copyButton.classList.add("copied-button");
-                    copyButton.onclick = () => copyToClipboard(text);
-                    messageDiv.appendChild(copyButton);
-                }
-            }
-            type();
         }
 
         function copyToClipboard(text) {
