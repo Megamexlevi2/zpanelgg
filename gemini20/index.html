@@ -96,6 +96,15 @@
             margin-right: auto;
             text-align: left;
         }
+        .code-message {
+            background-color: #2D2D2D;
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            font-family: 'Courier New', monospace;
+            white-space: pre-wrap;
+            overflow-wrap: break-word;
+        }
         .copied-button {
             background-color: #28a745;
             color: white;
@@ -110,6 +119,12 @@
         }
         .chat-message:hover .copied-button {
             display: block;
+        }
+        .language-name {
+            font-size: 16px;
+            color: #333;
+            font-style: italic;
+            margin-bottom: 8px;
         }
     </style>
 </head>
@@ -148,7 +163,27 @@
                 appendMessage("Code GPT", "Erro ao gerar código. Tente novamente mais tarde.", "bot-message");
             } else {
                 const message = data.candidates && data.candidates.length > 0 ? data.candidates[0].content.parts[0].text : "Erro ao gerar código.";
-                appendMessage("Code GPT", message, "bot-message");
+
+                // Detectando a linguagem com base em palavras-chave (exemplo simples)
+                let language = "Desconhecida";
+                if (message.includes("function") && message.includes("var")) {
+                    language = "JavaScript";
+                } else if (message.includes("def")) {
+                    language = "Python";
+                } else if (message.includes("public static void main")) {
+                    language = "Java";
+                }
+
+                // Exibição da explicação, código e nome da linguagem
+                appendMessage("Code GPT", "Aqui está a explicação do código:", "bot-message");
+                appendMessage("Code GPT", "Este código faz o seguinte: [explicação sobre o código]", "bot-message");
+
+                appendMessage("Code GPT", "Código gerado:", "bot-message");
+                appendCode(message);
+
+                appendMessage("Code GPT", "Linguagem: " + language, "bot-message language-name");
+
+                appendMessage("Code GPT", "Explicação final: O código gerado é uma solução para o problema proposto.", "bot-message");
             }
         }
 
@@ -160,6 +195,23 @@
             chatBox.appendChild(messageDiv);
             chatBox.scrollTop = chatBox.scrollHeight;
             return messageDiv;
+        }
+
+        function appendCode(code) {
+            const chatBox = document.getElementById("chat-box");
+            const codeDiv = document.createElement("div");
+            codeDiv.classList.add("chat-message", "code-message");
+            codeDiv.innerHTML = `<strong>Código:</strong><br><pre>${code}</pre>`;
+            
+            // Botão de copiar código
+            const copyButton = document.createElement("button");
+            copyButton.classList.add("copied-button");
+            copyButton.textContent = "Copiar Código";
+            copyButton.onclick = () => copyToClipboard(code);
+            codeDiv.appendChild(copyButton);
+
+            chatBox.appendChild(codeDiv);
+            chatBox.scrollTop = chatBox.scrollHeight;
         }
 
         function copyToClipboard(text) {
