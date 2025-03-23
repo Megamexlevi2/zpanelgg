@@ -143,8 +143,13 @@
             });
 
             const data = await response.json();
-            const message = data.candidates && data.candidates.length > 0 ? data.candidates[0].content.parts[0].text : "Erro ao gerar código.";
-            appendMessage("Code GPT", message, "bot-message");
+
+            if (data.error) {
+                appendMessage("Code GPT", "Erro ao gerar código. Tente novamente mais tarde.", "bot-message");
+            } else {
+                const message = data.candidates && data.candidates.length > 0 ? data.candidates[0].content.parts[0].text : "Erro ao gerar código.";
+                appendMessage("Code GPT", message, "bot-message");
+            }
         }
 
         function appendMessage(name, text, cssClass) {
