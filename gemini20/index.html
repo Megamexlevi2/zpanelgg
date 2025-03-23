@@ -1,223 +1,31 @@
 <!DOCTYPE html>
 <html lang="pt">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Code GPT</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Roboto', sans-serif;
-        }
-        body {
-            background: #F0F2F5;
-            color: #333;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            font-size: 16px;
-        }
-        .chat-container {
-            width: 100%;
-            max-width: 900px;
-            background: #fff;
-            border-radius: 12px;
-            box-shadow: 0 0 30px rgba(0, 0, 0, 0.1);
-            display: flex;
-            flex-direction: column;
-            height: 85vh;
-            overflow: hidden;
-            padding: 20px;
-        }
-        .chat-box {
-            flex: 1;
-            overflow-y: auto;
-            padding: 20px;
-            background-color: #f9f9f9;
-            border-radius: 10px;
-            box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.05);
-            margin-bottom: 20px;
-        }
-        .input-container {
-            display: flex;
-            padding: 10px 0;
-            border-top: 1px solid #ddd;
-        }
-        textarea {
-            flex: 1;
-            background-color: #f1f1f1;
-            border: 1px solid #ddd;
-            color: #333;
-            padding: 12px;
-            border-radius: 10px;
-            font-size: 16px;
-            resize: none;
-            height: 40px;
-            outline: none;
-        }
-        textarea:focus {
-            border-color: #00aaff;
-        }
-        button {
-            background-color: #00aaff;
-            border: none;
-            color: white;
-            padding: 12px 20px;
-            margin-left: 12px;
-            border-radius: 10px;
-            cursor: pointer;
-            font-size: 18px;
-            transition: all 0.3s;
-        }
-        button:hover {
-            background-color: #0088cc;
-        }
-        .chat-message {
-            margin-bottom: 15px;
-            padding: 12px;
-            border-radius: 10px;
-            position: relative;
-            max-width: 80%;
-            word-wrap: break-word;
-            line-height: 1.5;
-        }
-        .user-message {
-            background-color: #007bff;
-            color: white;
-            margin-left: auto;
-            text-align: right;
-        }
-        .bot-message {
-            background-color: #f1f1f1;
-            color: #333;
-            margin-right: auto;
-            text-align: left;
-        }
-        .code-message {
-            background-color: #2D2D2D;
-            color: white;
-            padding: 15px;
-            border-radius: 10px;
-            font-family: 'Courier New', monospace;
-            white-space: pre-wrap;
-            overflow-wrap: break-word;
-            font-size: 16px;
-        }
-        .copied-button {
-            background-color: #28a745;
-            color: white;
-            padding: 8px 15px;
-            border-radius: 10px;
-            cursor: pointer;
-            font-size: 14px;
-            position: absolute;
-            top: 5px;
-            right: 5px;
-            display: none;
-        }
-        .chat-message:hover .copied-button {
-            display: block;
-        }
-        .language-name {
-            font-size: 16px;
-            color: #333;
-            font-style: italic;
-            margin-bottom: 8px;
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Code GPT - Gerador de Códigos</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Arial',sans-serif}body{background:#121212;color:#eee;display:flex;justify-content:center;align-items:center;height:100vh;font-size:16px;overflow:hidden}.chat-container{width:100%;max-width:950px;background:#1e1e1e;border-radius:12px;box-shadow:0 0 30px rgba(0,0,0,0.5);display:flex;flex-direction:column;height:85vh;overflow:hidden;padding:20px}.chat-box{flex:1;overflow-y:auto;padding:20px;background-color:#2a2a2a;border-radius:10px;box-shadow:inset 0 0 10px rgba(0,0,0,0.3);margin-bottom:20px;color:#f1f1f1}.input-container{display:flex;padding:10px 0;border-top:1px solid #444}textarea{flex:1;background-color:#333;border:1px solid #444;color:#eee;padding:15px;border-radius:10px;font-size:16px;resize:none;height:50px;outline:none}textarea:focus{border-color:#00c3e9}button{background-color:#00c3e9;border:none;color:white;padding:12px 20px;margin-left:12px;border-radius:10px;cursor:pointer;font-size:18px;transition:all 0.3s ease}button:hover{background-color:#009db7}.chat-message{margin-bottom:15px;padding:15px;border-radius:10px;position:relative;max-width:80%;word-wrap:break-word;line-height:1.5}.user-message{background-color:#007bff;color:white;margin-left:auto;text-align:right}.bot-message{background-color:#444;color:#eee;margin-right:auto;text-align:left}.code-message{background-color:#121212;color:white;padding:20px;border-radius:10px;font-family:'Courier New',monospace;white-space:pre-wrap;overflow-wrap:break-word;font-size:16px}.copied-button{background-color:#28a745;color:white;padding:8px 15px;border-radius:10px;cursor:pointer;font-size:14px;position:absolute;top:5px;right:5px;display:none}.chat-message:hover .copied-button{display:block}.language-name{font-size:16px;color:#ddd;font-style:italic;margin-bottom:8px}h1{color:#00c3e9;font-size:32px;text-align:center;margin-bottom:20px}.decrypt-btn{background-color:#ff5733;padding:10px 15px;border-radius:10px;color:white;font-size:18px;cursor:pointer;margin-top:20px;transition:background-color 0.3s}.decrypt-btn:hover{background-color:#e04e2a}
+</style>
 </head>
 <body>
-    <div class="chat-container">
-        <div class="chat-box" id="chat-box"></div>
-        <div class="input-container">
-            <textarea id="prompt" placeholder="Digite sua pergunta..."></textarea>
-            <button onclick="generateCode()">➤</button>
-        </div>
-    </div>
-    <script>
-        const encodedKey = "QUl6YVN5QmxveXo1cnpoNVVJNExrSjZWWUU5bmRUd0x0Y2FXeEFJ";
-
-        function decodeAPIKey() {
-            return atob(encodedKey);
-        }
-
-        async function generateCode() {
-            const prompt = document.getElementById("prompt").value;
-            const chatBox = document.getElementById("chat-box");
-            if (!prompt) return;
-
-            appendMessage("Você", prompt, "user-message");
-            document.getElementById("prompt").value = "";
-
-            const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${decodeAPIKey()}`, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
-            });
-
-            const data = await response.json();
-
-            if (data.error) {
-                appendMessage("Code GPT", "Erro ao gerar código. Tente novamente mais tarde.", "bot-message");
-            } else {
-                const message = data.candidates && data.candidates.length > 0 ? data.candidates[0].content.parts[0].text : "Erro ao gerar código.";
-
-                // Detectando a linguagem com base em palavras-chave (exemplo simples)
-                let language = "Desconhecida";
-                if (message.includes("function") && message.includes("var")) {
-                    language = "JavaScript";
-                } else if (message.includes("def")) {
-                    language = "Python";
-                } else if (message.includes("public static void main")) {
-                    language = "Java";
-                }
-
-                // Exibição da explicação, código e nome da linguagem
-                appendMessage("Code GPT", "Aqui está a explicação do código:", "bot-message");
-                appendMessage("Code GPT", "Este código faz o seguinte: [explicação sobre o código]", "bot-message");
-
-                appendMessage("Code GPT", "Código gerado:", "bot-message");
-                appendCode(message);
-
-                appendMessage("Code GPT", "Linguagem: " + language, "bot-message language-name");
-
-                appendMessage("Code GPT", "Explicação final: O código gerado é uma solução para o problema proposto.", "bot-message");
-            }
-        }
-
-        function appendMessage(name, text, cssClass) {
-            const chatBox = document.getElementById("chat-box");
-            const messageDiv = document.createElement("div");
-            messageDiv.classList.add("chat-message", cssClass);
-            messageDiv.innerHTML = `<strong>${name}:</strong> ${text}`;
-            chatBox.appendChild(messageDiv);
-            chatBox.scrollTop = chatBox.scrollHeight;
-            return messageDiv;
-        }
-
-        function appendCode(code) {
-            const chatBox = document.getElementById("chat-box");
-            const codeDiv = document.createElement("div");
-            codeDiv.classList.add("chat-message", "code-message");
-            codeDiv.innerHTML = `<strong>Código:</strong><br><pre>${code}</pre>`;
-            
-            // Botão de copiar código
-            const copyButton = document.createElement("button");
-            copyButton.classList.add("copied-button");
-            copyButton.textContent = "Copiar Código";
-            copyButton.onclick = () => copyToClipboard(code); // Copiar apenas o código
-            codeDiv.appendChild(copyButton);
-
-            chatBox.appendChild(codeDiv);
-            chatBox.scrollTop = chatBox.scrollHeight;
-        }
-
-        function copyToClipboard(code) {
-            navigator.clipboard.writeText(code).then(() => alert("Código copiado!"));
-        }
-    </script>
+<div class="chat-container">
+<h1>Code GPT - Gerador de Códigos</h1>
+<div class="chat-box" id="chat-box"></div>
+<div class="input-container">
+<textarea id="prompt" placeholder="Digite sua pergunta..."></textarea>
+<button onclick="generateCode()">➤ Gerar Código</button>
+</div>
+<button class="decrypt-btn" onclick="toggleDecryptSection()">Descriptografar Código .lib</button>
+<div id="decrypt-section" style="display:none;">
+<h2 style="color:#00c3e9;">Envie seu arquivo .lib para decriptar</h2>
+<input type="file" id="lib-file" accept=".lib">
+<button onclick="decryptLib()">Decriptar</button>
+<div id="decrypted-code" style="margin-top:20px;"></div>
+</div>
+</div>
+<script>
+const encodedKey="QUl6YVN5QmxveXo1cnpoNVVJNExrSjZWWUU5bmRUd0x0Y2FXeEFJ";function decodeAPIKey(){return atob(encodedKey)}async function generateCode(){const prompt=document.getElementById("prompt").value;const chatBox=document.getElementById("chat-box");if(!prompt)return;appendMessage("Você",prompt,"user-message");document.getElementById("prompt").value="";const response=await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${decodeAPIKey()}`,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({contents:[{parts:[{text:"Uma IA chamada CodeGPT onde gera código e na parte do código entre o código coloque ```code``` para dizer que é código mas faça o código sem comentários. A explicação ficará fora do bloco de código."}]}]})});const data=await response.json();if(data.error){appendMessage("Code GPT","Erro ao gerar código. Tente novamente mais tarde.","bot-message")}else{const message=data.candidates&&data.candidates.length>0?data.candidates[0].content.parts[0].text:"Erro ao gerar código.";appendCode(message)}}function appendMessage(name,text,cssClass){const chatBox=document.getElementById("chat-box");const messageDiv=document.createElement("div");messageDiv.classList.add("chat-message",cssClass);messageDiv.innerHTML=`<strong>${name}:</strong> ${text}`;chatBox.appendChild(messageDiv);chatBox.scrollTop=chatBox.scrollHeight;return messageDiv}function appendCode(code){const chatBox=document.getElementById("chat-box");const codeDiv=document.createElement("div");codeDiv.classList.add("chat-message","code-message");codeDiv.innerHTML=`<pre>${code}</pre>`;const copyButton=document.createElement("button");copyButton.classList.add("copied-button");copyButton.textContent="Copiar Código";copyButton.onclick=()=>copyToClipboard(code);codeDiv.appendChild(copyButton);chatBox.appendChild(codeDiv);chatBox.scrollTop=chatBox.scrollHeight}function copyToClipboard(code){navigator.clipboard.writeText(code).then(()=>alert("Código copiado!"))}function toggleDecryptSection(){const section=document.getElementById("decrypt-section");section.style.display=section.style.display==="none"?"block":"none"}function decryptLib(){const fileInput=document.getElementById("lib-file");if(!fileInput.files.length){alert("Por favor, envie um arquivo .lib!");return}const file=fileInput.files[0];const reader=new FileReader();reader.onload=function(e){const fileContent=e.target.result;const decryptedCode=decryptCode(fileContent);document.getElementById("decrypted-code").textContent=decryptedCode};reader.readAsText(file)}function decryptCode(code){let decryptedCode=code.replace(/\/\*[\s\S]*?\*\/|\/\/.*/g,"");decryptedCode=decryptedCode.replace(/\s+/g," ");return decryptedCode}
+</script>
 </body>
 </html>
