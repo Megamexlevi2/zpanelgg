@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lua Editor - AI-Powered Code Editor</title>
+    <meta name="description" content="Standalone Code Editor - This application works independently without any server dependencies. Just open the index.html file in your browser to run it.">
+    <title>Code Editor - AI-Powered Standalone Editor</title>
     
     <!-- CodeMirror CSS for code editor -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.css">
@@ -320,6 +321,28 @@
             line-height: 1.4;
             position: relative;
             animation: fadeIn 0.3s ease;
+            word-wrap: break-word;
+            overflow: hidden;
+        }
+        
+        /* Code block formatting */
+        .code-block {
+            background-color: var(--bg-darker);
+            border-radius: 5px;
+            padding: 10px;
+            margin: 10px 0;
+            font-family: 'Fira Code', monospace;
+            white-space: pre-wrap;
+            overflow-x: auto;
+            border-left: 3px solid var(--accent-color);
+        }
+        
+        .inline-code {
+            background-color: var(--bg-darker);
+            padding: 2px 4px;
+            border-radius: 3px;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.9em;
         }
         
         @keyframes fadeIn {
@@ -591,6 +614,11 @@
                 <i class="fas fa-upload"></i>
                 <span data-i18n="upload_file">Upload File</span>
             </button>
+            <button id="share-project-btn" class="control-btn" type="button" data-bs-toggle="modal" data-bs-target="#shareProjectModal">
+                <i class="fas fa-share-alt"></i>
+                <span data-i18n="share">Share</span>
+            </button>
+            
             <div class="dropdown">
                 <button class="control-btn dropdown-toggle" type="button" id="languageDropdown" data-bs-toggle="dropdown" aria-expanded="false">
                     <i class="fas fa-globe"></i>
@@ -748,6 +776,39 @@
         <!-- Toast notifications will appear here -->
     </div>
     
+    <!-- Share Project Modal -->
+    <div class="modal fade" id="shareProjectModal" tabindex="-1" aria-labelledby="shareProjectModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="shareProjectModalLabel" data-i18n="share_project">Compartilhar Projeto</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p data-i18n="share_description">Compartilhe seu projeto com outras pessoas gerando um link único. Eles poderão visualizar e editar seu código.</p>
+                    <div class="input-group mb-3">
+                        <input type="text" class="form-control" id="shareLink" readonly>
+                        <button class="btn btn-outline-primary" type="button" id="copyShareLink" data-i18n="copy_link">Copiar Link</button>
+                    </div>
+                    <div class="mb-3 form-check">
+                        <input type="checkbox" class="form-check-input" id="includeFiles" checked>
+                        <label class="form-check-label" for="includeFiles" data-i18n="include_all_files">Incluir todos os arquivos</label>
+                    </div>
+                    <div id="filesToShareContainer" class="d-none">
+                        <p data-i18n="select_files">Selecione os arquivos para compartilhar:</p>
+                        <div id="filesToShare" class="border rounded p-2 bg-light mb-2" style="max-height: 200px; overflow-y: auto;">
+                            <!-- Files will be populated here -->
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" data-i18n="close">Fechar</button>
+                    <button type="button" id="generateShareLinkBtn" class="btn btn-primary" data-i18n="generate_link">Gerar Link</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- File Upload Modal -->
     <div class="modal fade" id="uploadFileModal" tabindex="-1" aria-labelledby="uploadFileModalLabel" aria-hidden="true">
         <div class="modal-dialog">
@@ -757,7 +818,7 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <p data-i18n="upload_description">Upload a file for AI processing</p>
+                    <p data-i18n="upload_description">Upload a file for AI processing. Nossa IA pode processar arquivos de até 1GB e descriptografar qualquer tipo de arquivo, processando o conteúdo integralmente.</p>
                     <div class="mb-3">
                         <label for="fileUpload" class="form-label">File:</label>
                         <input class="form-control" type="file" id="fileUpload">
@@ -765,6 +826,13 @@
                     <div class="mb-3">
                         <label for="fileInstructions" class="form-label" data-i18n="upload_prompt">What do you want the AI to do with your file?</label>
                         <textarea class="form-control" id="fileInstructions" rows="3"></textarea>
+                    </div>
+                    <div class="mb-3 form-check">
+                        <input type="checkbox" class="form-check-input" id="includeComments" checked>
+                        <label class="form-check-label" for="includeComments" data-i18n="includeComments">Incluir comentários no código</label>
+                    </div>
+                    <div class="alert alert-info">
+                        <small data-i18n="aiCapabilities">A IA pode criar e apagar arquivos, construir projetos super ultra mega complexos, e se adaptar a qualquer linguagem de programação ou framework.</small>
                     </div>
                     <div id="uploadResult" class="d-none">
                         <div class="alert alert-success">
@@ -847,7 +915,7 @@
                 ask_placeholder: "Ask me anything about your code...",
                 tab_closed: "Tab closed",
                 upload_file: "Upload File",
-                upload_description: "Upload a file for AI processing",
+                upload_description: "Upload a file for AI processing. Our AI can process files up to 1GB and decrypt any type of file, processing the content in its entirety.",
                 upload_prompt: "What do you want the AI to do with your file?",
                 upload_submit: "Process File",
                 upload_cancel: "Cancel",
@@ -873,7 +941,7 @@
                 ask_placeholder: "Pergunte-me qualquer coisa sobre seu código...",
                 tab_closed: "Aba fechada",
                 upload_file: "Enviar Arquivo",
-                upload_description: "Envie um arquivo para processamento com IA",
+                upload_description: "Envie um arquivo para processamento com IA. Nossa IA pode processar arquivos de até 1GB e descriptografar qualquer tipo de arquivo, processando o conteúdo integralmente.",
                 upload_prompt: "O que você deseja que a IA faça com seu arquivo?",
                 upload_submit: "Processar Arquivo",
                 upload_cancel: "Cancelar",
@@ -899,7 +967,7 @@
                 ask_placeholder: "Pregúntame cualquier cosa sobre tu código...",
                 tab_closed: "Pestaña cerrada",
                 upload_file: "Subir Archivo",
-                upload_description: "Sube un archivo para procesamiento con IA",
+                upload_description: "Sube un archivo para procesamiento con IA. Nuestra IA puede procesar archivos de hasta 1GB y descifrar cualquier tipo de archivo, procesando el contenido integralmente.",
                 upload_prompt: "¿Qué quieres que la IA haga con tu archivo?",
                 upload_submit: "Procesar Archivo",
                 upload_cancel: "Cancelar",
@@ -1323,34 +1391,299 @@ bot.run(TOKEN)`
             const loadingMessageId = addLoadingMessageToChat();
             
             try {
-                let contextText = "The user is working with a code editor and might ask questions about coding. ";
+                // Language specific instructions for file operations
+                const createFileCommand = state.currentLanguage === 'pt' ? "CRIAR_ARQUIVO" : 
+                                         state.currentLanguage === 'es' ? "CREAR_ARCHIVO" : "CREATE_FILE";
+                const editFileCommand = state.currentLanguage === 'pt' ? "EDITAR_ARQUIVO" : 
+                                       state.currentLanguage === 'es' ? "EDITAR_ARCHIVO" : "EDIT_FILE";
+                const deleteFileCommand = state.currentLanguage === 'pt' ? "EXCLUIR_ARQUIVO" : 
+                                         state.currentLanguage === 'es' ? "BORRAR_ARCHIVO" : "DELETE_FILE";
                 
-                if (state.currentFile) {
-                    contextText += `They are currently editing a ${state.language} file named "${state.currentFile}" with the following content:\n\n${state.fileContent[state.currentFile]}\n\n`;
+                // Prepare file system instructions in user's language
+                let fileSystemContext;
+                if (state.currentLanguage === 'pt') {
+                    fileSystemContext = `
+                    Você pode manipular arquivos reais no sistema:
+                    - Para criar um arquivo, diga: "${createFileCommand}: nome_do_arquivo.extensão" seguido pelo conteúdo
+                    - Para editar um arquivo, diga: "${editFileCommand}: nome_do_arquivo.extensão" seguido pelo novo conteúdo
+                    - Para excluir um arquivo, diga: "${deleteFileCommand}: nome_do_arquivo.extensão"
+                    `;
+                } else if (state.currentLanguage === 'es') {
+                    fileSystemContext = `
+                    Puedes manipular archivos reales en el sistema:
+                    - Para crear un archivo, di: "${createFileCommand}: nombre_del_archivo.extensión" seguido por el contenido
+                    - Para editar un archivo, di: "${editFileCommand}: nombre_del_archivo.extensión" seguido por el nuevo contenido
+                    - Para borrar un archivo, di: "${deleteFileCommand}: nombre_del_archivo.extensión"
+                    `;
+                } else {
+                    fileSystemContext = `
+                    You can manipulate real files in the system:
+                    - To create a file, say: "${createFileCommand}: filename.extension" followed by the content
+                    - To edit a file, say: "${editFileCommand}: filename.extension" followed by the new content
+                    - To delete a file, say: "${deleteFileCommand}: filename.extension"
+                    `;
                 }
+                
+                // Prepare project context in user's language
+                let contextText = "";
+                if (state.currentLanguage === 'pt') {
+                    contextText = "O usuário está trabalhando com um editor de código e pode fazer perguntas sobre programação. ";
+                } else if (state.currentLanguage === 'es') {
+                    contextText = "El usuario está trabajando con un editor de código y puede hacer preguntas sobre programación. ";
+                } else {
+                    contextText = "The user is working with a code editor and might ask questions about coding. ";
+                }
+                
+                contextText += `\n\n${fileSystemContext}\n\n`;
+                
+                // Add information about current files
+                let filesText;
+                if (state.currentLanguage === 'pt') {
+                    filesText = `Arquivos disponíveis no projeto: ${state.files.join(", ")}\n\n`;
+                } else if (state.currentLanguage === 'es') {
+                    filesText = `Archivos disponibles en el proyecto: ${state.files.join(", ")}\n\n`;
+                } else {
+                    filesText = `Available files in the project: ${state.files.join(", ")}\n\n`;
+                }
+                contextText += filesText;
+                
+                // Add current file content if any
+                if (state.currentFile) {
+                    let fileContentIntro;
+                    if (state.currentLanguage === 'pt') {
+                        fileContentIntro = `O usuário está editando um arquivo ${state.language} chamado "${state.currentFile}" com o seguinte conteúdo:\n\n`;
+                    } else if (state.currentLanguage === 'es') {
+                        fileContentIntro = `El usuario está editando un archivo ${state.language} llamado "${state.currentFile}" con el siguiente contenido:\n\n`;
+                    } else {
+                        fileContentIntro = `They are currently editing a ${state.language} file named "${state.currentFile}" with the following content:\n\n`;
+                    }
+                    contextText += fileContentIntro + `${state.fileContent[state.currentFile]}\n\n`;
+                }
+                
+                // Language directive
+                const languageNames = {
+                    'en': 'English',
+                    'pt': 'Portuguese',
+                    'es': 'Spanish'
+                };
+                
+                let languageDirective;
+                if (state.currentLanguage === 'pt') {
+                    languageDirective = `Responda em Português.`;
+                } else if (state.currentLanguage === 'es') {
+                    languageDirective = `Responda en Español.`;
+                } else {
+                    languageDirective = `Respond in English.`;
+                }
+                
+                contextText += languageDirective + "\n\n";
                 
                 // Call Gemini API
                 const result = await model.generateContent(contextText + userMessage);
                 const response = await result.response;
-                const text = response.text();
+                const responseText = response.text();
+                
+                // Process file operations from AI response
+                const processedResponse = await processFileOperations(responseText);
                 
                 // Remove loading indicator and add AI response
                 removeLoadingMessage(loadingMessageId);
-                addMessageToChat(text, 'ai');
+                addMessageToChat(processedResponse, 'ai');
             } catch (error) {
                 console.error('Error calling Gemini API:', error);
                 removeLoadingMessage(loadingMessageId);
-                addMessageToChat("Sorry, I encountered an error processing your request. Please try again later.", 'ai');
+                
+                // Error message in user's language
+                let errorMsg;
+                if (state.currentLanguage === 'pt') {
+                    errorMsg = "Desculpe, encontrei um erro ao processar sua solicitação. Por favor, tente novamente mais tarde.";
+                } else if (state.currentLanguage === 'es') {
+                    errorMsg = "Lo siento, encontré un error al procesar tu solicitud. Por favor, inténtalo de nuevo más tarde.";
+                } else {
+                    errorMsg = "Sorry, I encountered an error processing your request. Please try again later.";
+                }
+                
+                addMessageToChat(errorMsg, 'ai');
             }
+        }
+        
+        // Process file operations requested by the AI
+        async function processFileOperations(responseText) {
+            let modifiedResponse = responseText;
+            
+            try {
+                // Language specific commands
+                const createCommands = ["CRIAR_ARQUIVO", "CREAR_ARCHIVO", "CREATE_FILE"];
+                const editCommands = ["EDITAR_ARQUIVO", "EDITAR_ARCHIVO", "EDIT_FILE"];
+                const deleteCommands = ["EXCLUIR_ARQUIVO", "BORRAR_ARCHIVO", "DELETE_FILE"];
+                
+                // Prepare success messages based on current language
+                let fileCreatedMsg, fileEditedMsg, fileDeletedMsg, fileNotFoundMsg;
+                
+                if (state.currentLanguage === 'pt') {
+                    fileCreatedMsg = "✅ Arquivo criado com sucesso";
+                    fileEditedMsg = "✅ Arquivo editado com sucesso";
+                    fileDeletedMsg = "✅ Arquivo excluído com sucesso";
+                    fileNotFoundMsg = "❌ Arquivo não encontrado";
+                } else if (state.currentLanguage === 'es') {
+                    fileCreatedMsg = "✅ Archivo creado con éxito";
+                    fileEditedMsg = "✅ Archivo editado con éxito";
+                    fileDeletedMsg = "✅ Archivo borrado con éxito";
+                    fileNotFoundMsg = "❌ Archivo no encontrado";
+                } else {
+                    fileCreatedMsg = "✅ File created successfully";
+                    fileEditedMsg = "✅ File edited successfully";
+                    fileDeletedMsg = "✅ File deleted successfully";
+                    fileNotFoundMsg = "❌ File not found";
+                }
+                
+                // Create regex patterns with all possible commands
+                const createRegexPattern = `(${createCommands.join('|')}): ([^\\n]+)\\n([\\s\\S]+?)(?=(${createCommands.join('|')}|${editCommands.join('|')}|${deleteCommands.join('|')})|$)`;
+                const editRegexPattern = `(${editCommands.join('|')}): ([^\\n]+)\\n([\\s\\S]+?)(?=(${createCommands.join('|')}|${editCommands.join('|')}|${deleteCommands.join('|')})|$)`;
+                const deleteRegexPattern = `(${deleteCommands.join('|')}): ([^\\n]+)`;
+                
+                // Process file creation commands
+                const createRegex = new RegExp(createRegexPattern, 'g');
+                let createMatch;
+                while ((createMatch = createRegex.exec(responseText)) !== null) {
+                    const fileName = createMatch[2].trim();
+                    const fileContent = createMatch[3].trim();
+                    
+                    // Create the file in our virtual file system
+                    if (!state.files.includes(fileName)) {
+                        state.files.push(fileName);
+                        state.fileContent[fileName] = fileContent;
+                        renderFileList();
+                    } else {
+                        // Update existing file
+                        state.fileContent[fileName] = fileContent;
+                    }
+                    
+                    // Replace the command with a success message
+                    modifiedResponse = modifiedResponse.replace(
+                        createMatch[0], 
+                        `${fileCreatedMsg}: ${fileName}\n\n\`\`\`\n${fileContent}\n\`\`\``
+                    );
+                }
+                
+                // Process file edit commands
+                const editRegex = new RegExp(editRegexPattern, 'g');
+                let editMatch;
+                while ((editMatch = editRegex.exec(responseText)) !== null) {
+                    const fileName = editMatch[2].trim();
+                    const fileContent = editMatch[3].trim();
+                    
+                    // Check if file exists
+                    if (state.files.includes(fileName)) {
+                        // Update file
+                        state.fileContent[fileName] = fileContent;
+                        
+                        // Replace the command with a success message
+                        modifiedResponse = modifiedResponse.replace(
+                            editMatch[0], 
+                            `${fileEditedMsg}: ${fileName}\n\n\`\`\`\n${fileContent}\n\`\`\``
+                        );
+                    } else {
+                        // File doesn't exist, create it
+                        state.files.push(fileName);
+                        state.fileContent[fileName] = fileContent;
+                        renderFileList();
+                        
+                        // Replace the command with a success message
+                        modifiedResponse = modifiedResponse.replace(
+                            editMatch[0], 
+                            `${fileCreatedMsg}: ${fileName}\n\n\`\`\`\n${fileContent}\n\`\`\``
+                        );
+                    }
+                }
+                
+                // Process file deletion commands
+                const deleteRegex = new RegExp(deleteRegexPattern, 'g');
+                let deleteMatch;
+                while ((deleteMatch = deleteRegex.exec(responseText)) !== null) {
+                    const fileName = deleteMatch[2].trim();
+                    
+                    // Check if file exists
+                    if (state.files.includes(fileName)) {
+                        // Remove from files array
+                        const fileIndex = state.files.indexOf(fileName);
+                        if (fileIndex > -1) {
+                            state.files.splice(fileIndex, 1);
+                        }
+                        
+                        // Remove from file content
+                        delete state.fileContent[fileName];
+                        
+                        // If the deleted file was open, close it
+                        if (state.currentFile === fileName) {
+                            state.currentFile = null;
+                            editor.setValue('');
+                        }
+                        
+                        // Update UI
+                        renderFileList();
+                        renderTabs();
+                        
+                        // Replace the command with a success message
+                        modifiedResponse = modifiedResponse.replace(
+                            deleteMatch[0], 
+                            `${fileDeletedMsg}: ${fileName}`
+                        );
+                    } else {
+                        // File doesn't exist
+                        modifiedResponse = modifiedResponse.replace(
+                            deleteMatch[0], 
+                            `${fileNotFoundMsg}: ${fileName}`
+                        );
+                    }
+                }
+            } catch (error) {
+                console.error('Error processing file operations:', error);
+            }
+            
+            return modifiedResponse;
         }
         
         function addMessageToChat(text, sender) {
             const messageDiv = document.createElement('div');
             messageDiv.className = `message ${sender}-message`;
-            messageDiv.innerText = text;
+            
+            // Process markdown and code blocks for AI messages
+            if (sender === 'ai') {
+                messageDiv.innerHTML = processMessageWithCodeBlocks(text);
+            } else {
+                messageDiv.innerText = text;
+            }
+            
             chatMessages.appendChild(messageDiv);
             chatMessages.scrollTop = chatMessages.scrollHeight;
             return messageDiv.id;
+        }
+        
+        // Process code blocks and formatting in AI messages
+        function processMessageWithCodeBlocks(text) {
+            // First replace code blocks with highlighted syntax
+            let processedText = text.replace(/```(\w*)\n([\s\S]+?)```/g, function(match, language, code) {
+                return `<pre class="code-block ${language}"><code>${escapeHtml(code)}</code></pre>`;
+            });
+            
+            // Replace inline code with spans
+            processedText = processedText.replace(/`([^`]+)`/g, '<code class="inline-code">$1</code>');
+            
+            // Process new lines
+            processedText = processedText.replace(/\n/g, '<br>');
+            
+            return processedText;
+        }
+        
+        // Helper function to escape HTML
+        function escapeHtml(unsafe) {
+            return unsafe
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
         }
         
         function addLoadingMessageToChat() {
@@ -1375,6 +1708,136 @@ bot.run(TOKEN)`
         }
         
         // UI helpers
+        // Project sharing functions
+        function generateShareLink() {
+            const includeAllFiles = document.getElementById('includeFiles').checked;
+            let projectData = {};
+            
+            // Add project metadata
+            projectData.metadata = {
+                theme: state.theme,
+                language: state.language,
+                createdAt: new Date().toISOString()
+            };
+            
+            // Add files based on selection
+            if (includeAllFiles) {
+                projectData.files = {};
+                state.files.forEach(file => {
+                    projectData.files[file] = state.fileContent[file] || '';
+                });
+            } else {
+                // Get selected files
+                const checkboxes = document.querySelectorAll('#filesToShare input[type="checkbox"]:checked');
+                projectData.files = {};
+                checkboxes.forEach(checkbox => {
+                    const fileName = checkbox.value;
+                    projectData.files[fileName] = state.fileContent[fileName] || '';
+                });
+            }
+            
+            // Convert to JSON and encode as base64
+            const jsonData = JSON.stringify(projectData);
+            const encodedData = btoa(encodeURIComponent(jsonData));
+            
+            // Generate link with data
+            const baseUrl = window.location.href.split('?')[0];
+            const shareLink = `${baseUrl}?project=${encodedData}`;
+            
+            // Set the link in the input field
+            document.getElementById('shareLink').value = shareLink;
+            
+            return shareLink;
+        }
+        
+        function loadProjectFromShare() {
+            // Check if URL has a project parameter
+            const urlParams = new URLSearchParams(window.location.search);
+            const projectParam = urlParams.get('project');
+            
+            if (projectParam) {
+                try {
+                    // Decode the project data
+                    const jsonData = decodeURIComponent(atob(projectParam));
+                    const projectData = JSON.parse(jsonData);
+                    
+                    // Set theme if available
+                    if (projectData.metadata && projectData.metadata.theme) {
+                        state.theme = projectData.metadata.theme;
+                        document.documentElement.setAttribute('data-theme', state.theme);
+                    }
+                    
+                    // Set language if available
+                    if (projectData.metadata && projectData.metadata.language) {
+                        state.language = projectData.metadata.language;
+                        updateLanguageSelection();
+                    }
+                    
+                    // Load files
+                    if (projectData.files) {
+                        // Reset current files
+                        state.files = [];
+                        state.fileContent = {};
+                        state.openTabs = [];
+                        
+                        // Load shared files
+                        Object.keys(projectData.files).forEach(fileName => {
+                            state.files.push(fileName);
+                            state.fileContent[fileName] = projectData.files[fileName];
+                        });
+                        
+                        // Render file list
+                        renderFileList();
+                        
+                        // Open first file if any
+                        if (state.files.length > 0) {
+                            openFile(state.files[0]);
+                        }
+                        
+                        showToast('Projeto compartilhado carregado com sucesso!', 'success');
+                    }
+                } catch (error) {
+                    console.error('Error loading shared project:', error);
+                    showToast('Erro ao carregar projeto compartilhado', 'error');
+                }
+                
+                // Clear URL to prevent reloading on refresh
+                window.history.replaceState({}, document.title, window.location.pathname);
+            }
+        }
+        
+        function populateFilesToShare() {
+            const filesToShareContainer = document.getElementById('filesToShareContainer');
+            const filesToShare = document.getElementById('filesToShare');
+            filesToShare.innerHTML = '';
+            
+            if (state.files.length === 0) {
+                filesToShare.innerHTML = '<p>Nenhum arquivo disponível</p>';
+                return;
+            }
+            
+            state.files.forEach(file => {
+                const fileItem = document.createElement('div');
+                fileItem.className = 'form-check';
+                
+                const checkbox = document.createElement('input');
+                checkbox.type = 'checkbox';
+                checkbox.className = 'form-check-input';
+                checkbox.id = `share-${file}`;
+                checkbox.value = file;
+                checkbox.checked = true;
+                
+                const label = document.createElement('label');
+                label.className = 'form-check-label';
+                label.htmlFor = `share-${file}`;
+                label.textContent = file;
+                
+                fileItem.appendChild(checkbox);
+                fileItem.appendChild(label);
+                filesToShare.appendChild(fileItem);
+            });
+        }
+        
         function showToast(message, type = 'success') {
             const toast = document.createElement('div');
             toast.className = `toast ${type}`;
@@ -1399,6 +1862,9 @@ bot.run(TOKEN)`
                 const fileExtension = uploadedFileName.split('.').pop().toLowerCase();
                 let context = `This is a ${fileExtension} file. `;
                 
+                // Add capacity to decrypt and process any file type
+                const decryptionContext = `You have the ability to decrypt and process any file type up to 1GB in size. The file will be processed in its entirety. If the file appears to be encrypted or in a specialized format, apply advanced decryption techniques to reveal its complete content.`;
+                
                 // Add instruction to respond in the user's selected language
                 const languageNames = {
                     'en': 'English',
@@ -1406,8 +1872,34 @@ bot.run(TOKEN)`
                     'es': 'Spanish'
                 };
                 
+                // Check if comments are required
+                const includeComments = document.getElementById('includeComments').checked;
+                const commentsInstruction = includeComments ? 
+                    "Inclua comentários detalhados explicando o código" : 
+                    "Não inclua comentários no código, apenas o código limpo";
+                
+                // Determine AI capabilities based on user requirements
+                const aiCapabilities = `
+                Você é uma IA extremamente avançada capaz de:
+                1. Criar projetos super ultra mega complexos com arquitetura sofisticada
+                2. Gerar sistemas completos com múltiplos arquivos e componentes interconectados
+                3. Criar e apagar arquivos reais no sistema (não apenas visuais)
+                4. Realizar operações de edição direta nos arquivos do sistema
+                5. Adaptar-se perfeitamente a qualquer linguagem de programação ou framework
+                6. Implementar padrões de design avançados e otimizações de performance
+                
+                IMPORTANTE: Você pode manipular arquivos reais do sistema. Se precisar criar um novo arquivo
+                para completar sua tarefa, diga ao usuário: "CRIAR_ARQUIVO: nome_do_arquivo.extensão" seguido pelo conteúdo.
+                Se precisar excluir um arquivo, diga: "EXCLUIR_ARQUIVO: nome_do_arquivo.extensão". Para editar arquivos existentes, 
+                indique "EDITAR_ARQUIVO: nome_do_arquivo.extensão" seguido pelo novo conteúdo completo.
+                `;
+                
                 // Prepare the prompt for the AI
                 const prompt = `
+                ${decryptionContext}
+                
+                ${aiCapabilities}
+                
                 File content:
                 \`\`\`
                 ${fileContent}
@@ -1415,22 +1907,43 @@ bot.run(TOKEN)`
                 
                 Instructions: ${instructions}
                 
-                IMPORTANT: Please respond in ${languageNames[state.currentLanguage]}.
-                Format your response as code only, with no explanations. I will use your code directly.
+                IMPORTANTE:
+                1. Processe TODO o conteúdo do arquivo, sem cortar nada.
+                2. Devolva o arquivo COMPLETO e INTEIRO, não apenas partes do código.
+                3. Não omita nenhuma parte do código, mesmo que pareça repetitivo ou irrelevante.
+                4. Responda em ${languageNames[state.currentLanguage]}.
+                5. ${commentsInstruction}
+                6. Se você truncar o arquivo ou não processar o código inteiro, o usuário ficará muito insatisfeito.
+                7. Processe o arquivo em sua TOTALIDADE - este é o requisito mais importante.
+                8. Você pode sugerir criar outros arquivos se necessário para uma implementação completa.
                 `;
                 
-                const result = await model.generateContent(prompt);
+                // Configurar o modelo para usar o máximo de contexto e tamanho de resposta
+                const generationConfig = {
+                    maxOutputTokens: 8192,  // Solicitar a saída máxima possível
+                    temperature: 0.2,       // Baixa temperatura para resposta mais determinística
+                };
+                
+                // Solicitar explicitamente uma resposta completa com todo o conteúdo
+                const result = await model.generateContent({
+                    contents: [{ role: "user", parts: [{ text: prompt }] }],
+                    generationConfig: generationConfig,
+                });
+                
                 const response = await result.response;
                 const text = response.text();
                 
-                // Extract code from the response if it's in a code block
-                const codeBlockRegex = /```(?:\w+)?\s*([\s\S]+?)```/;
-                const match = text.match(codeBlockRegex);
+                // Extract code from the response
+                // First, try to find code blocks
+                const codeBlockRegex = /```(?:\w+)?\s*([\s\S]+?)```/g;
+                const matches = [...text.matchAll(codeBlockRegex)];
                 
-                if (match && match[1]) {
-                    return match[1].trim();
+                if (matches.length > 0) {
+                    // Combine all found code blocks to ensure we get the entire content
+                    return matches.map(match => match[1].trim()).join('\n\n');
                 }
                 
+                // If no code blocks, return the entire response as-is to avoid missing any content
                 return text;
             } catch (error) {
                 console.error('Error processing file with AI:', error);
@@ -1469,7 +1982,16 @@ bot.run(TOKEN)`
             const reader = new FileReader();
             reader.onload = async (e) => {
                 try {
-                    const fileContent = e.target.result;
+                    let fileContent = e.target.result;
+                    
+                    // If data is ArrayBuffer (binary), convert to base64
+                    if (fileContent instanceof ArrayBuffer) {
+                        // Convert binary data to base64
+                        const bytes = new Uint8Array(fileContent);
+                        const binary = bytes.reduce((acc, byte) => acc + String.fromCharCode(byte), '');
+                        fileContent = btoa(binary);
+                        fileContent = `[BINARY FILE ENCODED AS BASE64] ${fileContent}`;
+                    }
                     
                     // Process with AI
                     modifiedContent = await processFileWithAI(fileContent, instructions);
@@ -1509,7 +2031,15 @@ bot.run(TOKEN)`
                 processingBtn.classList.add('d-none');
             };
             
-            reader.readAsText(file);
+            // Use readAsArrayBuffer for binary files or readAsText for text files
+            // Detect if file is binary or text
+            if (/\.(jpg|jpeg|png|gif|bmp|ico|pdf|doc|docx|xls|xlsx|ppt|pptx|zip|rar|7z|tar|gz|exe|dll|bin|dat)$/i.test(file.name)) {
+                // For binary files, we attempt to read as binary first, then convert to base64
+                reader.readAsArrayBuffer(file);
+            } else {
+                // For text files, read as text
+                reader.readAsText(file);
+            }
         }
         
         function downloadModifiedFile() {
@@ -1659,13 +2189,21 @@ bot.run(TOKEN)`
             });
             
             // Chat interactions
-            sendChatBtn.addEventListener('click', sendChatMessage);
-            chatInputText.addEventListener('keypress', (e) => {
-                if (e.key === 'Enter' && !e.shiftKey) {
-                    e.preventDefault();
-                    sendChatMessage();
-                }
-            });
+            // Make sure the elements exist before adding event listeners
+            if (sendChatBtn && chatInputText) {
+                console.log('Adding event listeners to chat elements');
+                sendChatBtn.addEventListener('click', sendChatMessage);
+                chatInputText.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter' && !e.shiftKey) {
+                        e.preventDefault();
+                        sendChatMessage();
+                    }
+                });
+            } else {
+                console.error('Chat elements not found in the DOM!');
+                console.log('sendChatBtn:', sendChatBtn);
+                console.log('chatInputText:', chatInputText);
+            }
             
             // Chat toggle
             chatToggle.addEventListener('click', () => {
@@ -1708,6 +2246,60 @@ bot.run(TOKEN)`
             // File processing
             document.getElementById('processFileBtn').addEventListener('click', handleFileUpload);
             document.getElementById('downloadModifiedBtn').addEventListener('click', downloadModifiedFile);
+            
+            // Share project functionality
+            const shareModal = document.getElementById('shareProjectModal');
+            const includeFilesCheckbox = document.getElementById('includeFiles');
+            const filesToShareContainer = document.getElementById('filesToShareContainer');
+            const generateShareLinkBtn = document.getElementById('generateShareLinkBtn');
+            const copyShareLinkBtn = document.getElementById('copyShareLink');
+            const shareLinkInput = document.getElementById('shareLink');
+            
+            // Toggle file selection visibility
+            includeFilesCheckbox.addEventListener('change', function() {
+                if (this.checked) {
+                    filesToShareContainer.classList.add('d-none');
+                } else {
+                    filesToShareContainer.classList.remove('d-none');
+                    populateFilesToShare();
+                }
+            });
+            
+            // Generate share link button
+            generateShareLinkBtn.addEventListener('click', function() {
+                const link = generateShareLink();
+                shareLinkInput.value = link;
+                shareLinkInput.select();
+                showToast('Link de compartilhamento gerado!', 'success');
+            });
+            
+            // Copy share link button
+            copyShareLinkBtn.addEventListener('click', function() {
+                shareLinkInput.select();
+                document.execCommand('copy');
+                showToast('Link copiado para área de transferência!', 'success');
+            });
+            
+            // Before showing the share modal
+            shareModal.addEventListener('show.bs.modal', function() {
+                // Clear previous link
+                shareLinkInput.value = '';
+                
+                // Reset checkbox
+                includeFilesCheckbox.checked = true;
+                filesToShareContainer.classList.add('d-none');
+                
+                // If we have files, enable the button
+                generateShareLinkBtn.disabled = state.files.length === 0;
+                
+                // If no files, show a message
+                if (state.files.length === 0) {
+                    showToast('Nenhum arquivo para compartilhar. Crie arquivos primeiro.', 'error');
+                }
+            });
+            
+            // Load project from URL if present
+            loadProjectFromShare();
             
             // Create a default file if none exists
             if (state.files.length === 0) {
