@@ -1,0 +1,1482 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ZPanel - Gaming Enhancement Tool</title>
+    
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <!-- Custom CSS -->
+    <style>
+        :root {
+            --primary-color: #6200ea;
+            --primary-color-rgb: 98, 0, 234;
+            --secondary-color: #03dac6;
+            --secondary-color-rgb: 3, 218, 198;
+            --dark-color: #121212;
+            --light-color: #f5f5f5;
+            --accent-color: #ff4081;
+            --accent-color-rgb: 255, 64, 129;
+            --text-color: #ffffff;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: var(--dark-color);
+            color: var(--text-color);
+            position: relative;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .navbar {
+            background-color: var(--primary-color);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .navbar-brand {
+            font-weight: 700;
+            font-size: 24px;
+            color: var(--text-color) !important;
+        }
+
+        .logo-icon {
+            margin-right: 10px;
+            color: var(--secondary-color);
+        }
+
+        .hero-section {
+            background: linear-gradient(135deg, var(--primary-color), var(--dark-color));
+            padding: 5rem 0;
+            text-align: center;
+            border-radius: 0 0 20px 20px;
+            margin-bottom: 3rem;
+        }
+
+        .hero-title {
+            font-size: 3.5rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
+        }
+
+        .hero-subtitle {
+            font-size: 1.5rem;
+            font-weight: 300;
+            margin-bottom: 2rem;
+        }
+
+        .btn-primary {
+            background-color: var(--secondary-color);
+            border-color: var(--secondary-color);
+            color: var(--dark-color);
+            font-weight: 600;
+            padding: 10px 25px;
+            border-radius: 50px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--accent-color);
+            border-color: var(--accent-color);
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .section-title {
+            font-weight: 700;
+            margin-bottom: 2rem;
+            color: var(--secondary-color);
+            text-align: center;
+            position: relative;
+            padding-bottom: 15px;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 3px;
+            background-color: var(--accent-color);
+        }
+
+        .card {
+            background-color: rgba(30, 30, 30, 0.7);
+            border: none;
+            border-radius: 15px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .card-title {
+            color: var(--secondary-color);
+            font-weight: 600;
+        }
+
+        .card-body {
+            padding: 1.5rem;
+        }
+
+        .download-card {
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .download-icon {
+            font-size: 3rem;
+            margin-bottom: 1.5rem;
+            color: var(--accent-color);
+        }
+
+        .video-container {
+            position: relative;
+            padding-bottom: 56.25%; /* 16:9 aspect ratio */
+            height: 0;
+            overflow: hidden;
+            border-radius: 10px;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .video-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        .social-icon {
+            font-size: 2.5rem;
+            margin: 0 10px;
+            color: var(--secondary-color);
+            transition: all 0.3s ease;
+        }
+
+        .social-icon:hover {
+            color: var(--accent-color);
+            transform: scale(1.2);
+        }
+
+        .creator-card {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .creator-avatar {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background-color: var(--primary-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1rem;
+            border: 3px solid var(--secondary-color);
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .creator-avatar i {
+            font-size: 50px;
+            color: var(--text-color);
+        }
+
+        .creator-name {
+            font-weight: 600;
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+            color: var(--secondary-color);
+        }
+
+        footer {
+            background-color: rgba(20, 20, 20, 0.9);
+            padding: 2rem 0;
+            margin-top: 3rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .footer-text {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        /* Sidebar styles */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            right: -320px;
+            width: 320px;
+            height: 100%;
+            background-color: rgba(30, 30, 30, 0.95);
+            box-shadow: -5px 0 15px rgba(0, 0, 0, 0.3);
+            z-index: 1040;
+            transition: all 0.3s ease;
+            overflow-y: auto;
+            padding: 2rem 1rem;
+        }
+
+        .sidebar.active {
+            right: 0;
+        }
+
+        .close-sidebar {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            font-size: 1.5rem;
+            color: var(--text-color);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .close-sidebar:hover {
+            color: var(--accent-color);
+        }
+
+        .sidebar-header {
+            padding-bottom: 1rem;
+            margin-bottom: 2rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            text-align: center;
+        }
+
+        .sidebar-header h3 {
+            font-weight: 600;
+            color: var(--secondary-color);
+        }
+
+        .sidebar-menu {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .sidebar-menu li {
+            margin-bottom: 10px;
+        }
+
+        .sidebar-menu a {
+            display: block;
+            padding: 12px 20px;
+            color: var(--text-color);
+            border-radius: 10px;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .sidebar-menu a:hover, .sidebar-menu a.active {
+            background-color: var(--primary-color);
+            color: var(--text-color);
+            transform: translateX(5px);
+        }
+
+        .sidebar-menu i {
+            margin-right: 10px;
+            width: 20px;
+            text-align: center;
+        }
+
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            z-index: 1030;
+            display: none;
+            opacity: 0;
+            transition: all 0.3s ease;
+        }
+
+        .overlay.active {
+            display: block;
+            opacity: 1;
+        }
+
+        /* Customization panel styles */
+        .customization-section {
+            margin-top: 2rem;
+        }
+
+        .color-option {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            margin: 0 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-block;
+        }
+
+        .color-option:hover {
+            transform: scale(1.2);
+        }
+
+        .alert-warning {
+            background-color: rgba(255, 193, 7, 0.1);
+            color: #ffca2c;
+            border-color: rgba(255, 193, 7, 0.2);
+            border-radius: 10px;
+        }
+
+        /* Animation styles */
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        .pulse-animation {
+            animation: pulse 2s infinite;
+        }
+
+        /* Responsive styles */
+        @media (max-width: 768px) {
+            .hero-title {
+                font-size: 2.5rem;
+            }
+            
+            .hero-subtitle {
+                font-size: 1.2rem;
+            }
+            
+            .sidebar {
+                width: 280px;
+            }
+        }
+
+        /* Dark mode toggle */
+        .dark-mode-toggle {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: var(--primary-color);
+            color: var(--text-color);
+            border: none;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            z-index: 1020;
+            transition: all 0.3s ease;
+        }
+
+        .dark-mode-toggle:hover {
+            background-color: var(--secondary-color);
+            transform: translateY(-3px);
+        }
+
+        .dark-mode-toggle i {
+            font-size: 1.5rem;
+        }
+
+        /* Loading animation */
+        .loader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: var(--dark-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 0.5s ease, visibility 0.5s ease;
+        }
+
+        .loader.hidden {
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        .loader-inner {
+            width: 70px;
+            height: 70px;
+            border: 5px solid transparent;
+            border-top-color: var(--secondary-color);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .back-to-top {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            background-color: var(--primary-color);
+            color: var(--text-color);
+            border: none;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            z-index: 1020;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .back-to-top.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .back-to-top:hover {
+            background-color: var(--secondary-color);
+            transform: translateY(-3px);
+        }
+
+        .back-to-top i {
+            font-size: 1.5rem;
+        }
+        
+        /* Video Player Modal */
+        #video-modal-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            z-index: 9999;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            backdrop-filter: blur(5px);
+            transition: all 0.3s ease;
+        }
+        
+        .video-container img {
+            transition: transform 0.3s ease;
+        }
+        
+        .video-container:hover img {
+            transform: scale(1.05);
+        }
+        
+        .video-container .play-button {
+            opacity: 0.8;
+            transition: opacity 0.3s ease, transform 0.3s ease;
+        }
+        
+        .video-container:hover .play-button {
+            opacity: 1;
+            transform: translate(-50%, -50%) scale(1.2);
+        }
+    </style>
+</head>
+<body>
+    <!-- Loading Animation -->
+    <div class="loader">
+        <div class="loader-inner"></div>
+    </div>
+
+    <!-- Overlay -->
+    <div class="overlay" id="overlay"></div>
+
+    <!-- Sidebar -->
+    <div class="sidebar" id="sidebar">
+        <span class="close-sidebar" id="closeSidebar">
+            <i class="fas fa-times"></i>
+        </span>
+        <div class="sidebar-header">
+            <h3>ZPanel Menu</h3>
+        </div>
+        <ul class="sidebar-menu">
+            <li><a href="#home" class="active"><i class="fas fa-home"></i> Home</a></li>
+            <li><a href="#downloads"><i class="fas fa-download"></i> Downloads</a></li>
+            <li><a href="#news"><i class="fas fa-newspaper"></i> News & Updates</a></li>
+            <li><a href="#creators"><i class="fas fa-users"></i> Creators</a></li>
+            <li><a href="#all-videos"><i class="fas fa-film"></i> All Videos</a></li>
+            <li><a href="#customize"><i class="fas fa-paint-brush"></i> Customize</a></li>
+        </ul>
+
+        <!-- Customization Panel in Sidebar -->
+        <div class="customization-section">
+            <h5 class="mb-3 text-center">Customize Theme</h5>
+            <div class="mb-3">
+                <label for="primaryColorPicker" class="form-label">Primary Color:</label>
+                <input type="color" class="form-control form-control-color" id="primaryColorPicker" value="#6200ea" title="Choose primary color">
+            </div>
+            <div class="mb-3">
+                <label for="secondaryColorPicker" class="form-label">Secondary Color:</label>
+                <input type="color" class="form-control form-control-color" id="secondaryColorPicker" value="#03dac6" title="Choose secondary color">
+            </div>
+            <div class="mb-3">
+                <label for="accentColorPicker" class="form-label">Accent Color:</label>
+                <input type="color" class="form-control form-control-color" id="accentColorPicker" value="#ff4081" title="Choose accent color">
+            </div>
+            <div class="d-grid gap-2 mt-4">
+                <button class="btn btn-primary" id="resetColors">Reset Colors</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark sticky-top">
+        <div class="container">
+            <a class="navbar-brand" href="#home">
+                <i class="fas fa-gamepad logo-icon"></i>ZPanel
+            </a>
+            <button class="navbar-toggler" type="button" id="sidebarToggle">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero-section" id="home">
+        <div class="container">
+            <h1 class="hero-title">ZPanel Gaming Enhancement</h1>
+            <p class="hero-subtitle">Take your gaming experience to the next level</p>
+            <a href="#downloads" class="btn btn-primary btn-lg pulse-animation">
+                <i class="fas fa-download me-2"></i>Download Now
+            </a>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <div class="container">
+        <!-- Downloads Section -->
+        <section class="mb-5 pt-3" id="downloads">
+            <h2 class="section-title">Downloads</h2>
+            
+            <div class="alert alert-warning mb-4" role="alert">
+                <i class="fas fa-exclamation-triangle me-2"></i>
+                <strong>Important:</strong> You must download the modified Game Guardian (GG) first. The ZPanel script will only work with this modified version of Game Guardian.
+            </div>
+            
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="card download-card">
+                        <div class="card-body">
+                            <i class="fas fa-shield-alt download-icon"></i>
+                            <h3 class="card-title">Game Guardian (Modified)</h3>
+                            <p class="card-text">Enhanced version of Game Guardian required for ZPanel to function properly.</p>
+                            <a href="/gg.apk" class="btn btn-primary mt-3" download>
+                                <i class="fas fa-download me-2"></i>Download GG.apk
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-6">
+                    <div class="card download-card">
+                        <div class="card-body">
+                            <i class="fas fa-code download-icon"></i>
+                            <h3 class="card-title">ZPanel Script</h3>
+                            <p class="card-text">Latest version of ZPanel script for enhanced gaming experience.</p>
+                            <a href="/Zpanel_BG_1_9_0.dex" class="btn btn-primary mt-3" download>
+                                <i class="fas fa-download me-2"></i>Download Zpanel_BG_1_9_0.dex
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- News & Updates Section -->
+        <section class="mb-5 pt-3" id="news">
+            <h2 class="section-title">News & Updates</h2>
+            
+            <div class="row">
+                <div class="col-md-4 mb-4">
+                    <div class="card">
+                        <div class="card-body">
+                            <h3 class="card-title mb-3">Quick Start Guide</h3>
+                            <div class="video-container position-relative" style="cursor: pointer;" onclick="showVideoModal('A0jSHRu_dL4', 'Quick Start Guide')">
+                                <img src="https://img.youtube.com/vi/A0jSHRu_dL4/maxresdefault.jpg" alt="Quick Start Guide" class="img-fluid w-100">
+                                <div class="play-button" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 3rem; color: white; text-shadow: 0 0 10px rgba(0,0,0,0.5);">
+                                    <i class="fas fa-play-circle"></i>
+                                </div>
+                            </div>
+                            <p class="card-text">Short tutorial on how to execute the ZPanel script correctly.</p>
+                            <button class="btn btn-primary btn-sm w-100" onclick="showVideoModal('A0jSHRu_dL4', 'Quick Start Guide')">
+                                <i class="fas fa-play me-1"></i> Watch Video
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-4 mb-4">
+                    <div class="card">
+                        <div class="card-body">
+                            <h3 class="card-title mb-3">Full Tutorial</h3>
+                            <div class="video-container position-relative" style="cursor: pointer;" onclick="showVideoModal('QdsMyilHQ0Q', 'Full Tutorial')">
+                                <img src="https://img.youtube.com/vi/QdsMyilHQ0Q/maxresdefault.jpg" alt="Full Tutorial" class="img-fluid w-100">
+                                <div class="play-button" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 3rem; color: white; text-shadow: 0 0 10px rgba(0,0,0,0.5);">
+                                    <i class="fas fa-play-circle"></i>
+                                </div>
+                            </div>
+                            <p class="card-text">Comprehensive guide on setting up and using ZPanel effectively.</p>
+                            <button class="btn btn-primary btn-sm w-100" onclick="showVideoModal('QdsMyilHQ0Q', 'Full Tutorial')">
+                                <i class="fas fa-play me-1"></i> Watch Video
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-4 mb-4">
+                    <div class="card">
+                        <div class="card-body">
+                            <h3 class="card-title mb-3">Features Demo</h3>
+                            <div class="video-container position-relative" style="cursor: pointer;" onclick="showVideoModal('MhZ5CovDAtk', 'Features Demo')">
+                                <img src="https://img.youtube.com/vi/MhZ5CovDAtk/maxresdefault.jpg" alt="Features Demo" class="img-fluid w-100">
+                                <div class="play-button" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 3rem; color: white; text-shadow: 0 0 10px rgba(0,0,0,0.5);">
+                                    <i class="fas fa-play-circle"></i>
+                                </div>
+                            </div>
+                            <p class="card-text">Showcase of the latest features and capabilities of ZPanel.</p>
+                            <button class="btn btn-primary btn-sm w-100" onclick="showVideoModal('MhZ5CovDAtk', 'Features Demo')">
+                                <i class="fas fa-play me-1"></i> Watch Video
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Discord Section -->
+            <div class="card text-center mb-4">
+                <div class="card-body">
+                    <h3 class="card-title">Join Our Discord Community</h3>
+                    <p class="card-text">Get support, share tips, and connect with other ZPanel users.</p>
+                    <a href="https://discord.gg/e3hutmSG3G" target="_blank" class="btn btn-primary mt-3">
+                        <i class="fab fa-discord me-2"></i>Join Discord Server
+                    </a>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Creators Section -->
+        <section class="mb-5 pt-3" id="creators">
+            <h2 class="section-title">Meet The Creators</h2>
+            
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="card creator-card">
+                        <div class="creator-avatar">
+                            <i class="fab fa-youtube"></i>
+                        </div>
+                        <h3 class="creator-name">Zynxus</h3>
+                        <p class="card-text">ZPanel Co-Creator & Developer</p>
+                        <a href="https://youtube.com/@zynxus?si=v2F9pFR_P0i9WQx4" target="_blank" class="btn btn-primary mt-3">
+                            <i class="fab fa-youtube me-2"></i>Visit Channel
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="col-md-6">
+                    <div class="card creator-card">
+                        <div class="creator-avatar">
+                            <i class="fab fa-youtube"></i>
+                        </div>
+                        <h3 class="creator-name">Madara Hex</h3>
+                        <p class="card-text">ZPanel Co-Creator & Developer</p>
+                        <a href="https://youtube.com/@madara_hex?si=A-REoqC--rjcgQqn" target="_blank" class="btn btn-primary mt-3">
+                            <i class="fab fa-youtube me-2"></i>Visit Channel
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- All Videos Section -->
+        <section class="mb-5 pt-3" id="all-videos">
+            <h2 class="section-title">All Creator Videos</h2>
+            
+            <ul class="nav nav-tabs mb-4" id="creatorTabs" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active" id="zynxus-tab" data-bs-toggle="tab" data-bs-target="#zynxus-videos" type="button" role="tab" aria-controls="zynxus-videos" aria-selected="true">Zynxus Videos</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="madara-tab" data-bs-toggle="tab" data-bs-target="#madara-videos" type="button" role="tab" aria-controls="madara-videos" aria-selected="false">Madara Hex Videos</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="blockman-tab" data-bs-toggle="tab" data-bs-target="#blockman-videos" type="button" role="tab" aria-controls="blockman-videos" aria-selected="false">Blockman Go Admin Panel</button>
+                </li>
+            </ul>
+            
+            <div class="tab-content" id="creatorTabsContent">
+                <div class="tab-pane fade show active" id="zynxus-videos" role="tabpanel" aria-labelledby="zynxus-tab">
+                    <div class="row videos-container" id="zynxus-videos-container">
+                        <div class="col-12 text-center">
+                            <div class="spinner-border text-primary" role="status">
+                                <span class="visually-hidden">Loading...</span>
+                            </div>
+                            <p class="mt-2">Loading Zynxus videos...</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="tab-pane fade" id="madara-videos" role="tabpanel" aria-labelledby="madara-tab">
+                    <div class="row videos-container" id="madara-videos-container">
+                        <div class="col-12 text-center">
+                            <div class="spinner-border text-primary" role="status">
+                                <span class="visually-hidden">Loading...</span>
+                            </div>
+                            <p class="mt-2">Loading Madara Hex videos...</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="tab-pane fade" id="blockman-videos" role="tabpanel" aria-labelledby="blockman-tab">
+                    <div class="row videos-container" id="blockman-videos-container">
+                        <div class="col-12 text-center">
+                            <div class="spinner-border text-primary" role="status">
+                                <span class="visually-hidden">Loading...</span>
+                            </div>
+                            <p class="mt-2">Loading Blockman Go Admin Panel videos...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Customization Section -->
+        <section class="mb-5 pt-3" id="customize">
+            <h2 class="section-title">Customize Your Experience</h2>
+            
+            <div class="card">
+                <div class="card-body">
+                    <p class="card-text text-center mb-4">Select from our preset themes or create your own custom color scheme.</p>
+                    
+                    <div class="row mb-4">
+                        <div class="col text-center">
+                            <h5 class="mb-3">Preset Themes</h5>
+                            <div class="color-option" style="background-color: #6200ea;" data-primary="#6200ea" data-secondary="#03dac6" data-accent="#ff4081" title="Default"></div>
+                            <div class="color-option" style="background-color: #ff5722;" data-primary="#ff5722" data-secondary="#ffeb3b" data-accent="#4caf50" title="Sunset"></div>
+                            <div class="color-option" style="background-color: #2196f3;" data-primary="#2196f3" data-secondary="#64ffda" data-accent="#f50057" title="Ocean"></div>
+                            <div class="color-option" style="background-color: #9c27b0;" data-primary="#9c27b0" data-secondary="#00bcd4" data-accent="#ffc107" title="Mystic"></div>
+                            <div class="color-option" style="background-color: #f44336;" data-primary="#f44336" data-secondary="#8bc34a" data-accent="#00bcd4" title="Fire"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="row mt-4">
+                        <div class="col-md-4 mb-3">
+                            <label for="primaryCustom" class="form-label">Primary Color</label>
+                            <input type="color" class="form-control form-control-color w-100" id="primaryCustom" value="#6200ea">
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label for="secondaryCustom" class="form-label">Secondary Color</label>
+                            <input type="color" class="form-control form-control-color w-100" id="secondaryCustom" value="#03dac6">
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label for="accentCustom" class="form-label">Accent Color</label>
+                            <input type="color" class="form-control form-control-color w-100" id="accentCustom" value="#ff4081">
+                        </div>
+                    </div>
+                    
+                    <div class="text-center mt-3">
+                        <button class="btn btn-primary" id="applyCustomColors">
+                            <i class="fas fa-paint-brush me-2"></i>Apply Custom Colors
+                        </button>
+                        <button class="btn btn-outline-secondary ms-2" id="resetCustomColors">
+                            <i class="fas fa-undo me-2"></i>Reset to Default
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+    
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <h3 class="mb-3">ZPanel</h3>
+                    <p class="footer-text">A powerful gaming enhancement tool designed to improve your gaming experience.</p>
+                </div>
+                <div class="col-md-6 text-md-end">
+                    <h3 class="mb-3">Connect With Us</h3>
+                    <a href="https://discord.gg/e3hutmSG3G" target="_blank" class="social-icon">
+                        <i class="fab fa-discord"></i>
+                    </a>
+                    <a href="https://youtube.com/@zynxus?si=v2F9pFR_P0i9WQx4" target="_blank" class="social-icon">
+                        <i class="fab fa-youtube"></i>
+                    </a>
+                </div>
+            </div>
+            <hr class="mt-4 mb-4" style="background-color: rgba(255, 255, 255, 0.1);">
+            <p class="text-center footer-text mb-0">
+                &copy; 2025 ZPanel. All rights reserved.
+            </p>
+        </div>
+    </footer>
+    
+    <!-- Back to Top Button -->
+    <button class="back-to-top" id="backToTop">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+    
+    <!-- Dark Mode Toggle -->
+    <button class="dark-mode-toggle" id="darkModeToggle">
+        <i class="fas fa-moon"></i>
+    </button>
+    
+    <!-- Bootstrap JS Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Custom JavaScript -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Remove loader after page is fully loaded
+            setTimeout(function() {
+                document.querySelector('.loader').classList.add('hidden');
+            }, 1000);
+            
+            // Sidebar functionality
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('overlay');
+            const sidebarToggle = document.getElementById('sidebarToggle');
+            const closeSidebar = document.getElementById('closeSidebar');
+            
+            // Open sidebar
+            sidebarToggle.addEventListener('click', function() {
+                sidebar.classList.add('active');
+                overlay.classList.add('active');
+                document.body.style.overflow = 'hidden';
+            });
+            
+            // Close sidebar
+            function closeSidebarFunc() {
+                sidebar.classList.remove('active');
+                overlay.classList.remove('active');
+                document.body.style.overflow = '';
+            }
+            
+            closeSidebar.addEventListener('click', closeSidebarFunc);
+            overlay.addEventListener('click', closeSidebarFunc);
+            
+            // Sidebar menu links
+            const sidebarLinks = document.querySelectorAll('.sidebar-menu a');
+            
+            sidebarLinks.forEach(link => {
+                link.addEventListener('click', function() {
+                    // Remove active class from all links
+                    sidebarLinks.forEach(l => l.classList.remove('active'));
+                    // Add active class to current link
+                    this.classList.add('active');
+                    // Close sidebar when a link is clicked
+                    closeSidebarFunc();
+                });
+            });
+            
+            // Smooth scrolling for all anchor links
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    
+                    const targetId = this.getAttribute('href');
+                    if (targetId === '#') return;
+                    
+                    const targetElement = document.querySelector(targetId);
+                    if (targetElement) {
+                        window.scrollTo({
+                            top: targetElement.offsetTop - 70,
+                            behavior: 'smooth'
+                        });
+                    }
+                });
+            });
+            
+            // Theme customization preset colors
+            const colorOptions = document.querySelectorAll('.color-option');
+            
+            colorOptions.forEach(option => {
+                option.addEventListener('click', function() {
+                    const primaryColor = this.getAttribute('data-primary');
+                    const secondaryColor = this.getAttribute('data-secondary');
+                    const accentColor = this.getAttribute('data-accent');
+                    
+                    applyThemeColors(primaryColor, secondaryColor, accentColor);
+                    updateColorInputs(primaryColor, secondaryColor, accentColor);
+                });
+            });
+            
+            // Apply custom colors
+            const applyCustomColorBtn = document.getElementById('applyCustomColors');
+            
+            applyCustomColorBtn.addEventListener('click', function() {
+                const primaryColor = document.getElementById('primaryCustom').value;
+                const secondaryColor = document.getElementById('secondaryCustom').value;
+                const accentColor = document.getElementById('accentCustom').value;
+                
+                applyThemeColors(primaryColor, secondaryColor, accentColor);
+            });
+            
+            // Reset to default colors
+            const resetCustomColorsBtn = document.getElementById('resetCustomColors');
+            const resetColorsBtn = document.getElementById('resetColors');
+            
+            function resetColors() {
+                const defaultPrimary = '#6200ea';
+                const defaultSecondary = '#03dac6';
+                const defaultAccent = '#ff4081';
+                
+                applyThemeColors(defaultPrimary, defaultSecondary, defaultAccent);
+                updateColorInputs(defaultPrimary, defaultSecondary, defaultAccent);
+            }
+            
+            resetCustomColorsBtn.addEventListener('click', resetColors);
+            resetColorsBtn.addEventListener('click', resetColors);
+            
+            // Apply theme colors function
+            function applyThemeColors(primary, secondary, accent) {
+                document.documentElement.style.setProperty('--primary-color', primary);
+                document.documentElement.style.setProperty('--secondary-color', secondary);
+                document.documentElement.style.setProperty('--accent-color', accent);
+                
+                // Save to localStorage
+                localStorage.setItem('zpanel-primary-color', primary);
+                localStorage.setItem('zpanel-secondary-color', secondary);
+                localStorage.setItem('zpanel-accent-color', accent);
+            }
+            
+            // Update color inputs function
+            function updateColorInputs(primary, secondary, accent) {
+                document.getElementById('primaryCustom').value = primary;
+                document.getElementById('secondaryCustom').value = secondary;
+                document.getElementById('accentCustom').value = accent;
+                document.getElementById('primaryColorPicker').value = primary;
+                document.getElementById('secondaryColorPicker').value = secondary;
+                document.getElementById('accentColorPicker').value = accent;
+            }
+            
+            // Load saved colors from localStorage
+            function loadSavedColors() {
+                const savedPrimary = localStorage.getItem('zpanel-primary-color');
+                const savedSecondary = localStorage.getItem('zpanel-secondary-color');
+                const savedAccent = localStorage.getItem('zpanel-accent-color');
+                const savedDarkMode = localStorage.getItem('zpanel-dark-mode');
+                
+                if (savedPrimary && savedSecondary && savedAccent) {
+                    applyThemeColors(savedPrimary, savedSecondary, savedAccent);
+                    updateColorInputs(savedPrimary, savedSecondary, savedAccent);
+                }
+                
+                if (savedDarkMode === 'light') {
+                    toggleDarkMode();
+                }
+            }
+            
+            // Call to load saved colors
+            loadSavedColors();
+            
+            // Sidebar color pickers
+            const primaryColorPicker = document.getElementById('primaryColorPicker');
+            const secondaryColorPicker = document.getElementById('secondaryColorPicker');
+            const accentColorPicker = document.getElementById('accentColorPicker');
+            
+            primaryColorPicker.addEventListener('input', function() {
+                document.documentElement.style.setProperty('--primary-color', this.value);
+                document.getElementById('primaryCustom').value = this.value;
+            });
+            
+            secondaryColorPicker.addEventListener('input', function() {
+                document.documentElement.style.setProperty('--secondary-color', this.value);
+                document.getElementById('secondaryCustom').value = this.value;
+            });
+            
+            accentColorPicker.addEventListener('input', function() {
+                document.documentElement.style.setProperty('--accent-color', this.value);
+                document.getElementById('accentCustom').value = this.value;
+            });
+            
+            // Back to top button
+            const backToTopButton = document.getElementById('backToTop');
+            
+            window.addEventListener('scroll', function() {
+                if (window.pageYOffset > 300) {
+                    backToTopButton.classList.add('visible');
+                } else {
+                    backToTopButton.classList.remove('visible');
+                }
+            });
+            
+            backToTopButton.addEventListener('click', function() {
+                window.scrollTo({
+                    top: 0,
+                    behavior: 'smooth'
+                });
+            });
+            
+            // Dark mode toggle
+            const darkModeToggle = document.getElementById('darkModeToggle');
+            let isDarkMode = true; // Since default is dark
+            
+            function toggleDarkMode() {
+                if (isDarkMode) {
+                    // Switch to light mode
+                    document.documentElement.style.setProperty('--dark-color', '#f5f5f5');
+                    document.documentElement.style.setProperty('--light-color', '#121212');
+                    document.documentElement.style.setProperty('--text-color', '#121212');
+                    darkModeToggle.innerHTML = '<i class="fas fa-sun"></i>';
+                    localStorage.setItem('zpanel-dark-mode', 'light');
+                } else {
+                    // Switch to dark mode
+                    document.documentElement.style.setProperty('--dark-color', '#121212');
+                    document.documentElement.style.setProperty('--light-color', '#f5f5f5');
+                    document.documentElement.style.setProperty('--text-color', '#ffffff');
+                    darkModeToggle.innerHTML = '<i class="fas fa-moon"></i>';
+                    localStorage.setItem('zpanel-dark-mode', 'dark');
+                }
+                isDarkMode = !isDarkMode;
+            }
+            
+            darkModeToggle.addEventListener('click', toggleDarkMode);
+            
+            // Prevent form submissions
+            document.querySelectorAll('form').forEach(form => {
+                form.addEventListener('submit', e => {
+                    e.preventDefault();
+                });
+            });
+            
+            // Get YouTube API key from external file
+            async function getYouTubeApiKey() {
+                    return 'AIzaSyAK_3Ji2TlvU_L3hmffAbyhSlKJP5lfab0';
+                }
+            }
+            
+            // Fetch YouTube videos directly using the API
+            async function fetchYouTubeVideos() {
+                try {
+                    const apiKey = await getYouTubeApiKey();
+                    
+                    if (!apiKey) {
+                        throw new Error('Could not retrieve API key');
+                    }
+                    
+                    // Get Zynxus channel videos
+                    const zynxusVideos = await getChannelVideos('zynxus', apiKey);
+                    const zynxusContainer = document.getElementById('zynxus-videos-container');
+                    populateVideos(zynxusContainer, zynxusVideos);
+                    
+                    // Get Madara Hex channel videos
+                    const madaraVideos = await getChannelVideos('madara_hex', apiKey);
+                    const madaraContainer = document.getElementById('madara-videos-container');
+                    populateVideos(madaraContainer, madaraVideos);
+                    
+                    // Get Blockman Go Admin Panel videos (search query)
+                    const blockmanVideos = await searchYouTubeVideos('blockman go admin panel', apiKey);
+                    const blockmanContainer = document.getElementById('blockman-videos-container');
+                    populateVideos(blockmanContainer, blockmanVideos);
+                } catch (error) {
+                    console.error('Error fetching videos:', error);
+                    document.getElementById('zynxus-videos-container').innerHTML = '<div class="col-12 text-center"><p class="text-danger">Error loading videos. Please try again later.</p></div>';
+                    document.getElementById('madara-videos-container').innerHTML = '<div class="col-12 text-center"><p class="text-danger">Error loading videos. Please try again later.</p></div>';
+                    document.getElementById('blockman-videos-container').innerHTML = '<div class="col-12 text-center"><p class="text-danger">Error loading videos. Please try again later.</p></div>';
+                }
+            }
+            
+            // Search YouTube videos by query
+            async function searchYouTubeVideos(query, apiKey) {
+                try {
+                    const searchUrl = `https://www.googleapis.com/youtube/v3/search?part=snippet&q=${encodeURIComponent(query)}&maxResults=15&type=video&key=${apiKey}`;
+                    const searchResponse = await fetch(searchUrl);
+                    
+                    if (!searchResponse.ok) {
+                        throw new Error(`Search failed: ${searchResponse.status} ${searchResponse.statusText}`);
+                    }
+                    
+                    const searchData = await searchResponse.json();
+                    
+                    if (!searchData.items || searchData.items.length === 0) {
+                        console.warn(`No videos found for search: ${query}`);
+                        return [];
+                    }
+                    
+                    // Format the response
+                    return searchData.items.map(item => ({
+                        id: item.id.videoId,
+                        title: item.snippet.title,
+                        thumbnail: item.snippet.thumbnails.high.url,
+                        publishedAt: item.snippet.publishedAt
+                    }));
+                    
+                } catch (error) {
+                    console.error(`Error searching videos for "${query}":`, error);
+                    return [];
+                }
+            }
+            
+            // Get channel videos directly from YouTube API
+            async function getChannelVideos(channelUsername, apiKey) {
+                try {
+                    // First get the channel ID from the username via search
+                    const searchUrl = `https://www.googleapis.com/youtube/v3/search?part=snippet&q=${channelUsername}&type=channel&key=${apiKey}`;
+                    const searchResponse = await fetch(searchUrl);
+                    
+                    if (!searchResponse.ok) {
+                        throw new Error(`Channel search failed: ${searchResponse.status} ${searchResponse.statusText}`);
+                    }
+                    
+                    const searchData = await searchResponse.json();
+                    
+                    if (!searchData.items || searchData.items.length === 0) {
+                        console.warn(`No channel found for username: ${channelUsername}`);
+                        return [];
+                    }
+                    
+                    const channelId = searchData.items[0].id.channelId;
+                    
+                    // Now get the videos for this channel
+                    const videosUrl = `https://www.googleapis.com/youtube/v3/search?part=snippet&channelId=${channelId}&maxResults=10&order=date&type=video&key=${apiKey}`;
+                    const videosResponse = await fetch(videosUrl);
+                    
+                    if (!videosResponse.ok) {
+                        throw new Error(`Video search failed: ${videosResponse.status} ${videosResponse.statusText}`);
+                    }
+                    
+                    const videosData = await videosResponse.json();
+                    
+                    if (videosData.error) {
+                        throw new Error(`API Error: ${videosData.error.message || 'Unknown API error'}`);
+                    }
+                    
+                    if (!videosData.items) {
+                        console.warn(`No videos found for channel: ${channelUsername}`);
+                        return [];
+                    }
+                    
+                    // Format the response
+                    return videosData.items.map(item => ({
+                        id: item.id.videoId,
+                        title: item.snippet.title,
+                        thumbnail: item.snippet.thumbnails.high.url,
+                        publishedAt: item.snippet.publishedAt
+                    }));
+                    
+                } catch (error) {
+                    console.error(`Error getting videos for ${channelUsername}:`, error);
+                    return [];
+                }
+            }
+            
+            // Populate videos into container
+            function populateVideos(container, videos) {
+                // Clear loading spinner
+                container.innerHTML = '';
+                
+                if (!videos || videos.length === 0) {
+                    container.innerHTML = '<div class="col-12 text-center"><p>No videos found for this creator.</p></div>';
+                    return;
+                }
+                
+                // Add videos to container
+                videos.forEach(video => {
+                    const videoCard = document.createElement('div');
+                    videoCard.className = 'col-md-4 col-sm-6 mb-4';
+                    
+                    const publishDate = new Date(video.publishedAt).toLocaleDateString();
+                    
+                    videoCard.innerHTML = `
+                        <div class="card h-100">
+                            <div class="video-container" style="padding-bottom: 56.25%; height: 0; position: relative;">
+                                <img src="${video.thumbnail}" alt="${video.title}" class="img-fluid" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; cursor: pointer;">
+                                <div class="play-button" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 3rem; color: white; text-shadow: 0 0 10px rgba(0,0,0,0.5);">
+                                    <i class="fas fa-play-circle"></i>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <h5 class="card-title" style="font-size: 1rem; line-height: 1.4;">${video.title}</h5>
+                                <p class="card-text"><small class="text-muted">Published: ${publishDate}</small></p>
+                                <div class="d-flex justify-content-between">
+                                    <button class="btn btn-primary btn-sm play-inline-btn" data-video-id="${video.id}" data-video-title="${video.title.replace(/"/g, '&quot;')}">
+                                        <i class="fas fa-play me-1"></i> Play Video
+                                    </button>
+                                    <a href="https://www.youtube.com/watch?v=${video.id}" target="_blank" class="btn btn-outline-secondary btn-sm">
+                                        <i class="fab fa-youtube me-1"></i> YouTube
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    
+                    container.appendChild(videoCard);
+                    
+                    // Add click events to thumbnail and play button to show embedded video
+                    const playButtons = [
+                        videoCard.querySelector('img'),
+                        videoCard.querySelector('.play-button'),
+                        videoCard.querySelector('.play-inline-btn')
+                    ];
+                    
+                    playButtons.forEach(btn => {
+                        if (btn) {
+                            btn.addEventListener('click', function() {
+                                showVideoModal(video.id, video.title);
+                            });
+                        }
+                    });
+                });
+            }
+            
+            // Create and show video modal with details - making it globally available
+            window.showVideoModal = async function(videoId, videoTitle) {
+                // Check if modal container already exists, remove if it does
+                let modalContainer = document.getElementById('video-modal-container');
+                if (modalContainer) {
+                    document.body.removeChild(modalContainer);
+                }
+                
+                // Create modal container
+                modalContainer = document.createElement('div');
+                modalContainer.id = 'video-modal-container';
+                modalContainer.style.cssText = 'position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.8); z-index: 9999; display: flex; justify-content: center; align-items: center;';
+                
+                // Create modal content
+                const modalContent = document.createElement('div');
+                modalContent.style.cssText = 'width: 90%; max-width: 1000px; max-height: 90vh; background-color: var(--dark-color); border-radius: 8px; overflow-y: auto; position: relative;';
+                
+                // Add close button
+                const closeButton = document.createElement('button');
+                closeButton.innerHTML = '<i class="fas fa-times"></i>';
+                closeButton.style.cssText = 'position: absolute; top: 10px; right: 10px; background-color: rgba(0,0,0,0.5); color: white; border: none; width: 30px; height: 30px; border-radius: 50%; cursor: pointer; z-index: 10;';
+                closeButton.addEventListener('click', () => {
+                    document.body.removeChild(modalContainer);
+                });
+                
+                // Add video title
+                const titleElement = document.createElement('h4');
+                titleElement.textContent = videoTitle;
+                titleElement.style.cssText = 'padding: 10px 15px; color: var(--text-color); margin: 0; font-size: 1.2rem;';
+                
+                // Create responsive iframe container
+                const videoWrapper = document.createElement('div');
+                videoWrapper.style.cssText = 'position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden;';
+                
+                // Add iframe with YouTube embed
+                const iframe = document.createElement('iframe');
+                iframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0`;
+                iframe.style.cssText = 'position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none;';
+                iframe.setAttribute('allowfullscreen', '');
+                iframe.setAttribute('allow', 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture');
+                
+                // Create loading indicator for details
+                const loadingIndicator = document.createElement('div');
+                loadingIndicator.className = 'text-center my-3';
+                loadingIndicator.innerHTML = `
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Loading video details...</span>
+                    </div>
+                    <p class="mt-2">Loading video details...</p>
+                `;
+                
+                // Create details container
+                const detailsContainer = document.createElement('div');
+                detailsContainer.className = 'video-details p-3';
+                
+                // Append elements
+                videoWrapper.appendChild(iframe);
+                modalContent.appendChild(closeButton);
+                modalContent.appendChild(titleElement);
+                modalContent.appendChild(videoWrapper);
+                modalContent.appendChild(loadingIndicator);
+                modalContent.appendChild(detailsContainer);
+                modalContainer.appendChild(modalContent);
+                document.body.appendChild(modalContainer);
+                
+                // Close on click outside
+                modalContainer.addEventListener('click', (e) => {
+                    if (e.target === modalContainer) {
+                        document.body.removeChild(modalContainer);
+                    }
+                });
+                
+                // Close on ESC key
+                document.addEventListener('keydown', function closeModal(e) {
+                    if (e.key === 'Escape') {
+                        if (document.body.contains(modalContainer)) {
+                            document.body.removeChild(modalContainer);
+                        }
+                        document.removeEventListener('keydown', closeModal);
+                    }
+                });
+                
+                // Fetch video details including comments, likes, and channel info
+                try {
+                    const apiKey = await getYouTubeApiKey();
+                    if (!apiKey) {
+                        throw new Error('Could not retrieve API key');
+                    }
+                    
+                    // Get video details
+                    const videoDetailsUrl = `https://www.googleapis.com/youtube/v3/videos?part=snippet,statistics&id=${videoId}&key=${apiKey}`;
+                    const videoResponse = await fetch(videoDetailsUrl);
+                    const videoData = await videoResponse.json();
+                    
+                    if (!videoData.items || videoData.items.length === 0) {
+                        throw new Error('Video details not found');
+                    }
+                    
+                    const videoDetails = videoData.items[0];
+                    const channelId = videoDetails.snippet.channelId;
+                    
+                    // Get channel details
+                    const channelUrl = `https://www.googleapis.com/youtube/v3/channels?part=snippet,statistics&id=${channelId}&key=${apiKey}`;
+                    const channelResponse = await fetch(channelUrl);
+                    const channelData = await channelResponse.json();
+                    
+                    // Get comments
+                    const commentsUrl = `https://www.googleapis.com/youtube/v3/commentThreads?part=snippet&videoId=${videoId}&maxResults=10&key=${apiKey}`;
+                    const commentsResponse = await fetch(commentsUrl);
+                    const commentsData = await commentsResponse.json();
+                    
+                    // Remove loading indicator
+                    modalContent.removeChild(loadingIndicator);
+                    
+                    // Create video info section
+                    const channelInfo = channelData.items[0];
+                    const videoStats = videoDetails.statistics;
+                    const videoSnippet = videoDetails.snippet;
+                    
+                    const publishDate = new Date(videoSnippet.publishedAt).toLocaleDateString();
+                    const description = videoSnippet.description.replace(/\n/g, '<br>');
+                    
+                    const videoInfoHTML = `
+                        <div class="video-info mb-4">
+                            <div class="d-flex align-items-center mb-3">
+                                <img src="${channelInfo.snippet.thumbnails.default.url}" alt="${channelInfo.snippet.title}" 
+                                     class="rounded-circle me-2" style="width: 50px; height: 50px;">
+                                <div>
+                                    <h5 class="mb-0">${channelInfo.snippet.title}</h5>
+                                    <small>${channelInfo.statistics.subscriberCount} subscribers</small>
+                                </div>
+                                <a href="https://www.youtube.com/channel/${channelId}" target="_blank" 
+                                   class="btn btn-outline-primary btn-sm ms-auto">
+                                    <i class="fab fa-youtube me-1"></i> Visit Channel
+                                </a>
+                            </div>
+                            
+                            <div class="video-stats d-flex mb-3">
+                                <div class="me-3">
+                                    <i class="fas fa-thumbs-up me-1"></i> ${videoStats.likeCount || '0'} likes
+                                </div>
+                                <div class="me-3">
+                                    <i class="fas fa-eye me-1"></i> ${videoStats.viewCount || '0'} views
+                                </div>
+                                <div>
+                                    <i class="fas fa-calendar-alt me-1"></i> Published: ${publishDate}
+                                </div>
+                            </div>
+                            
+                            <div class="video-description mb-3">
+                                <h6>Description:</h6>
+                                <div class="description-text p-2 rounded" style="background-color: rgba(0,0,0,0.1); max-height: 150px; overflow-y: auto;">
+                                    ${description}
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    
+                    // Create comments section
+                    let commentsHTML = `
+                        <div class="comments-section">
+                            <h6 class="mb-3">Comments:</h6>
+                            <div class="comments-notice mb-3 p-2 rounded" style="background-color: rgba(98, 0, 234, 0.1);">
+                                <small><i class="fas fa-info-circle me-1"></i> You can view comments but cannot post new ones from this site.</small>
+                            </div>
+                    `;
+                    
+                    if (commentsData.items && commentsData.items.length > 0) {
+                        commentsData.items.forEach(item => {
+                            const comment = item.snippet.topLevelComment.snippet;
+                            const commentDate = new Date(comment.publishedAt).toLocaleDateString();
+                            
+                            commentsHTML += `
+                                <div class="comment mb-3 p-2 rounded" style="background-color: rgba(0,0,0,0.1);">
+                                    <div class="d-flex mb-2">
+                                        <img src="${comment.authorProfileImageUrl}" alt="${comment.authorDisplayName}" 
+                                             class="rounded-circle me-2" style="width: 40px; height: 40px;">
+                                        <div>
+                                            <div class="fw-bold">${comment.authorDisplayName}</div>
+                                            <small>${commentDate}</small>
+                                        </div>
+                                    </div>
+                                    <div class="comment-text">${comment.textDisplay}</div>
+                                    <div class="mt-1">
+                                        <small><i class="fas fa-thumbs-up me-1"></i> ${comment.likeCount}</small>
+                                    </div>
+                                </div>
+                            `;
+                        });
+                    } else {
+                        commentsHTML += `<p>No comments found for this video.</p>`;
+                    }
+                    
+                    commentsHTML += `</div>`;
+                    
+                    // Add all info to details container
+                    detailsContainer.innerHTML = videoInfoHTML + commentsHTML;
+                    
+                } catch (error) {
+                    console.error('Error fetching video details:', error);
+                    modalContent.removeChild(loadingIndicator);
+                    detailsContainer.innerHTML = `
+                        <div class="alert alert-warning">
+                            <p><i class="fas fa-exclamation-triangle me-2"></i> Could not load video details.</p>
+                            <p>Error: ${error.message}</p>
+                        </div>
+                    `;
+                }
+            }
+            
+            // Add videos tab to sidebar menu if it doesn't exist already
+            const sidebarMenu = document.querySelector('.sidebar-menu');
+            const existingAllVideosLink = sidebarMenu.querySelector('a[href="#all-videos"]');
+            
+            if (!existingAllVideosLink) {
+                const allVideosLink = document.createElement('li');
+                allVideosLink.innerHTML = '<a href="#all-videos"><i class="fas fa-film"></i> All Videos</a>';
+                const customizeLink = sidebarMenu.querySelector('a[href="#customize"]');
+                if (customizeLink && customizeLink.parentNode) {
+                    sidebarMenu.insertBefore(allVideosLink, customizeLink.parentNode);
+                } else {
+                    sidebarMenu.appendChild(allVideosLink);
+                }
+            }
+            
+            // Load videos when page is loaded
+            fetchYouTubeVideos();
+        });
+    </script>
+</body>
+</html>
