@@ -4,619 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PanelTube - Blockman Go Admin Panel</title>
-    <!-- Bootstrap 5 Dark Theme from Replit CDN -->
+    <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="https://cdn.replit.com/agent/bootstrap-agent-dark-theme.min.css">
-    <!-- Font Awesome for icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        /* Custom design completely different from YouTube */
-        :root {
-            --primary-color: #5a33f0;
-            --secondary-color: #43c6ac;
-            --accent-color: #ff764a;
-            --bg-dark: #141728;
-            --bg-card: #1e2235;
-            --text-primary: #ffffff;
-            --text-secondary: #a9b5c8;
-        }
-        
-        body {
-            background: var(--bg-dark);
-            background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAiIGhlaWdodD0iMTAwIiB2aWV3Qm94PSIwIDAgMTAwIDEwMCI+PHBhdGggZmlsbD0ibm9uZSIgc3Ryb2tlPSIjMzAzMzRlIiBzdHJva2Utd2lkdGg9IjAuNSIgZD0iTTAgMGwxMDAgMTAwTTEwMCAwTDAgMTAwIj48L3BhdGg+PC9zdmc+');
-            color: var(--text-primary);
-            padding: 0;
-            margin: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-        
-        /* Channel video card styles */
-        .channel-video-card {
-            background: var(--bg-card);
-            border-radius: 12px;
-            overflow: hidden;
-            transition: all 0.3s;
-            cursor: pointer;
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            height: 100%;
-        }
-        
-        .channel-video-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
-        }
-        
-        .channel-video-card .thumbnail-container {
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .channel-video-card .thumbnail-container img {
-            width: 100%;
-            aspect-ratio: 16/9;
-            object-fit: cover;
-            transition: transform 0.3s;
-        }
-        
-        .channel-video-card:hover .thumbnail-container img {
-            transform: scale(1.1);
-        }
-        
-        .channel-video-card .play-button {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%) scale(0.8);
-            width: 50px;
-            height: 50px;
-            background: var(--accent-color);
-            color: white;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            opacity: 0;
-            transition: all 0.3s;
-        }
-        
-        .channel-video-card:hover .play-button {
-            opacity: 1;
-            transform: translate(-50%, -50%) scale(1);
-        }
-        
-        .channel-video-info {
-            padding: 12px;
-        }
-        
-        .channel-video-info .video-title {
-            margin-bottom: 8px;
-            font-weight: 600;
-            display: -webkit-box;
-            -webkit-line-clamp: 2;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-            line-height: 1.3;
-        }
-        
-        .app-header {
-            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-            padding: 25px 0;
-            margin-bottom: 40px;
-            position: relative;
-            overflow: hidden;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-        }
-        
-        .app-header::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxNTAiIGhlaWdodD0iMTUwIiB2aWV3Qm94PSIwIDAgMTUwIDE1MCI+PHBhdGggZmlsbD0iI2ZmZmZmZjEwIiBkPSJNNzUgMGw3NSAxMzAuMUgwTDc1IDB6Ii8+PC9zdmc+');
-            background-size: 50px;
-            opacity: 0.1;
-        }
-        
-        .app-title {
-            font-size: 2.5rem;
-            font-weight: 800;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            margin: 0;
-            color: white;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
-        }
-        
-        .app-subtitle {
-            color: rgba(255, 255, 255, 0.8);
-            font-weight: 300;
-            letter-spacing: 1px;
-        }
-        
-        .search-container {
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 50px;
-            padding: 6px;
-            margin-top: 20px;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-        }
-        
-        .search-container input {
-            background: transparent;
-            border: none;
-            color: white;
-            padding: 10px 20px;
-        }
-        
-        .search-container input:focus {
-            outline: none;
-            background: transparent;
-            color: white;
-            box-shadow: none;
-        }
-        
-        .search-btn {
-            background: white;
-            color: var(--primary-color);
-            border-radius: 50px;
-            padding: 8px 25px;
-            font-weight: bold;
-            transition: all 0.2s;
-        }
-        
-        .search-btn:hover {
-            background: var(--accent-color);
-            color: white;
-            transform: translateY(-2px);
-        }
-        
-        /* Featured channels section */
-        .featured-section {
-            background: rgba(90, 51, 240, 0.1);
-            border-radius: 15px;
-            padding: 25px;
-            margin-bottom: 40px;
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .featured-section::after {
-            content: '';
-            position: absolute;
-            bottom: -20px;
-            right: -20px;
-            width: 100px;
-            height: 100px;
-            background: linear-gradient(135deg, var(--accent-color), transparent);
-            border-radius: 50%;
-            opacity: 0.5;
-        }
-        
-        .featured-title {
-            position: relative;
-            display: inline-block;
-            font-size: 1.5rem;
-            font-weight: 700;
-            margin-bottom: 20px;
-            color: var(--text-primary);
-        }
-        
-        .featured-title::after {
-            content: '';
-            position: absolute;
-            bottom: -8px;
-            left: 0;
-            width: 40px;
-            height: 4px;
-            background: var(--accent-color);
-            border-radius: 4px;
-        }
-        
-        .channel-card {
-            background: var(--bg-card);
-            border-radius: 15px;
-            overflow: hidden;
-            transition: all 0.3s ease;
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            position: relative;
-        }
-        
-        .channel-card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
-            border-color: rgba(255, 255, 255, 0.1);
-        }
-        
-        .channel-banner {
-            height: 100px;
-            background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
-            position: relative;
-            background-size: cover;
-            background-position: center;
-            overflow: hidden;
-        }
-        
-        /* Prevent image downloads and context menu */
-        img {
-            pointer-events: none;
-            -webkit-user-drag: none;
-            user-select: none;
-            -moz-user-select: none;
-            -webkit-user-select: none;
-            -ms-user-select: none;
-        }
-        
-        .channel-avatar {
-            position: absolute;
-            bottom: -30px;
-            left: 20px;
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            border: 3px solid var(--bg-card);
-            background: #ffffff;
-            overflow: hidden;
-        }
-        
-        .channel-avatar img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-        
-        .channel-info {
-            padding: 40px 20px 20px;
-        }
-        
-        .channel-name {
-            font-weight: 700;
-            font-size: 1.1rem;
-            margin-bottom: 5px;
-        }
-        
-        .channel-stats {
-            color: var(--text-secondary);
-            font-size: 0.85rem;
-            display: flex;
-            justify-content: space-between;
-        }
-        
-        .hype-badge {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            background: var(--accent-color);
-            color: white;
-            font-size: 0.7rem;
-            padding: 3px 8px;
-            border-radius: 20px;
-            font-weight: 600;
-            box-shadow: 0 2px 10px rgba(255, 118, 74, 0.4);
-        }
-        
-        /* Video grid styles */
-        .content-grid {
-            margin-top: 20px;
-        }
-        
-        .video-card {
-            background: var(--bg-card);
-            border-radius: 12px;
-            overflow: hidden;
-            transition: all 0.3s;
-            height: 100%;
-            position: relative;
-            border: 1px solid rgba(255, 255, 255, 0.05);
-        }
-        
-        .video-card:hover {
-            transform: translateY(-8px) scale(1.02);
-            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
-            border-color: rgba(255, 255, 255, 0.1);
-        }
-        
-        .thumbnail-container {
-            position: relative;
-            overflow: hidden;
-            aspect-ratio: 16/9;
-        }
-        
-        .thumbnail-container img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            transition: transform 0.5s;
-        }
-        
-        .video-card:hover .thumbnail-container img {
-            transform: scale(1.1);
-        }
-        
-        .play-button {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: var(--accent-color);
-            color: white;
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            opacity: 0;
-            transition: all 0.3s;
-            z-index: 1;
-        }
-        
-        .video-card:hover .play-button {
-            opacity: 1;
-            transform: translate(-50%, -50%) scale(1.2);
-        }
-        
-        .duration-badge {
-            position: absolute;
-            bottom: 10px;
-            right: 10px;
-            background: rgba(0, 0, 0, 0.7);
-            color: white;
-            padding: 2px 8px;
-            border-radius: 4px;
-            font-size: 0.8rem;
-            font-weight: 500;
-        }
-        
-        .video-info {
-            padding: 15px;
-        }
-        
-        .video-title {
-            font-weight: 600;
-            font-size: 1rem;
-            line-height: 1.4;
-            margin-bottom: 10px;
-            display: -webkit-box;
-            -webkit-box-orient: vertical;
-            -webkit-line-clamp: 2;
-            overflow: hidden;
-        }
-        
-        .video-meta {
-            display: flex;
-            justify-content: space-between;
-            color: var(--text-secondary);
-            font-size: 0.8rem;
-        }
-        
-        .video-creator {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            margin-top: 10px;
-        }
-        
-        .creator-avatar {
-            width: 24px;
-            height: 24px;
-            border-radius: 50%;
-            overflow: hidden;
-        }
-        
-        .creator-avatar img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-        
-        .creator-name {
-            color: var(--text-secondary);
-            font-size: 0.85rem;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-        
-        .loading-spinner {
-            display: none;
-            margin: 40px auto;
-            text-align: center;
-        }
-        
-        .loading-animation {
-            display: inline-block;
-            width: 50px;
-            height: 50px;
-            border: 3px solid rgba(255, 255, 255, 0.1);
-            border-radius: 50%;
-            border-top-color: var(--accent-color);
-            animation: spin 1s ease-in-out infinite;
-        }
-        
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-        
-        .load-more-btn {
-            background: transparent;
-            border: 2px solid var(--primary-color);
-            color: var(--primary-color);
-            border-radius: 30px;
-            padding: 10px 30px;
-            font-weight: 600;
-            transition: all 0.3s;
-            margin: 30px auto;
-        }
-        
-        .load-more-btn:hover {
-            background: var(--primary-color);
-            color: white;
-            transform: translateY(-3px);
-        }
-        
-        #message {
-            background: rgba(255, 118, 74, 0.2);
-            border-left: 4px solid var(--accent-color);
-            padding: 15px 20px;
-            border-radius: 4px;
-            margin: 20px 0;
-            display: none;
-        }
-        
-        /* Modal styles */
-        .custom-modal {
-            background: var(--bg-dark);
-            border-radius: 20px;
-            overflow: hidden;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        
-        .modal-header {
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-            padding: 20px 25px;
-        }
-        
-        .modal-title {
-            font-weight: 700;
-            color: var(--text-primary);
-        }
-        
-        .modal-body {
-            padding: 25px;
-        }
-        
-        .video-player-container {
-            border-radius: 12px;
-            overflow: hidden;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-        }
-        
-        .video-details {
-            margin-top: 25px;
-        }
-        
-        .channel-profile-section {
-            background: var(--bg-card);
-            border-radius: 12px;
-            padding: 20px;
-            margin-bottom: 25px;
-        }
-        
-        .channel-header {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            margin-bottom: 15px;
-        }
-        
-        .channel-large-avatar {
-            width: 80px;
-            height: 80px;
-            border-radius: 50%;
-            border: 3px solid var(--primary-color);
-            overflow: hidden;
-        }
-        
-        .channel-large-avatar img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-        
-        .channel-profile-info h3 {
-            font-weight: 700;
-            margin-bottom: 5px;
-        }
-        
-        .channel-profile-stats {
-            display: flex;
-            gap: 15px;
-            color: var(--text-secondary);
-            font-size: 0.9rem;
-        }
-        
-        .channel-description {
-            color: var(--text-secondary);
-            font-size: 0.9rem;
-            line-height: 1.6;
-            margin-top: 15px;
-            max-height: 100px;
-            overflow-y: auto;
-        }
-        
-        .view-channel-btn {
-            background: transparent;
-            border: 1px solid var(--primary-color);
-            color: var(--primary-color);
-            border-radius: 20px;
-            padding: 5px 15px;
-            font-size: 0.85rem;
-            transition: all 0.3s;
-            margin-top: 10px;
-        }
-        
-        .view-channel-btn:hover {
-            background: var(--primary-color);
-            color: white;
-        }
-        
-        .comment-section {
-            background: var(--bg-card);
-            border-radius: 12px;
-            padding: 20px;
-        }
-        
-        .comment-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 20px;
-        }
-        
-        .comment {
-            padding: 15px;
-            border-radius: 10px;
-            background: rgba(255, 255, 255, 0.05);
-            margin-bottom: 15px;
-        }
-        
-        .comment-author {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-bottom: 10px;
-        }
-        
-        .comment-avatar {
-            width: 30px;
-            height: 30px;
-            border-radius: 50%;
-            overflow: hidden;
-        }
-        
-        .comment-avatar img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-        
-        .comment-author-name {
-            font-weight: 600;
-            font-size: 0.9rem;
-        }
-        
-        .comment-date {
-            color: var(--text-secondary);
-            font-size: 0.8rem;
-        }
-        
-        .comment-content {
-            font-size: 0.9rem;
-            line-height: 1.5;
-            color: var(--text-secondary);
-        }
-    </style>
 </head>
 <body>
     <header class="app-header">
@@ -636,27 +26,6 @@
     </header>
     
     <div class="container">
-        <!-- Direct channel access -->
-        <div class="direct-access-section py-4 mb-4 text-center">
-            <div class="lead mb-2">Access channels directly:</div>
-            <div class="d-flex justify-content-center gap-3">
-                <button class="btn btn-outline-primary" onclick="viewChannelByUsername('eternalhackerbg')">
-                    <i class="fas fa-user-circle me-2"></i>@eternalhackerbg
-                </button>
-                <button class="btn btn-outline-primary" onclick="viewChannelByUsername('m7mdkicking')">
-                    <i class="fas fa-user-circle me-2"></i>@m7mdkicking
-                </button>
-            </div>
-        </div>
-        
-        <!-- Featured Channels Section -->
-        <section class="featured-section">
-            <h2 class="featured-title">Most Famous Channels</h2>
-            <div class="row" id="featuredChannels">
-                <!-- Featured channels will be loaded here -->
-            </div>
-        </section>
-        
         <div id="message"></div>
 
         <h2 class="featured-title">Latest Videos</h2>
@@ -672,9 +41,20 @@
                 Load More <i class="fas fa-chevron-down ms-1"></i>
             </button>
         </div>
+
+        <div class="footer text-center mt-5 py-4 text-secondary">
+            <p>Created by Zynxus</p>
+            <div class="social-links mt-2">
+                <a href="https://youtube.com/@zynxus?si=BS3iRal9e_ZZ9jjl" target="_blank" class="text-secondary me-3">
+                    <i class="fab fa-youtube"></i> YouTube
+                </a>
+                <a href="https://discord.gg/dZ7azaDe" target="_blank" class="text-secondary">
+                    <i class="fab fa-discord"></i> Discord
+                </a>
+            </div>
+        </div>
     </div>
 
-    <!-- Video Modal - Completely redesigned -->
     <div class="modal fade" id="videoModal" tabindex="-1" aria-labelledby="videoModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
             <div class="modal-content custom-modal">
@@ -703,7 +83,6 @@
                         </div>
                         
                         <div class="col-lg-4">
-                            <!-- Channel Profile Section -->
                             <div class="channel-profile-section" id="channelProfileSection">
                                 <div class="channel-header">
                                     <div class="channel-large-avatar">
@@ -723,7 +102,6 @@
                                 </div>
                             </div>
                             
-                            <!-- Comments Section -->
                             <div class="comment-section">
                                 <div class="comment-header">
                                     <h5><i class="fas fa-comments me-2"></i>Comments</h5>
@@ -743,27 +121,20 @@
         </div>
     </div>
 
-    <!-- Bootstrap JS Bundle -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
-    
     <script>
-        // YouTube API Key 
         const API_KEY = 'AIzaSyABlnNv-qdslEwwGQxeErvDPZxcW8W3BYo';
         let nextPageToken = '';
         let currentQuery = 'blockman go admin panel';
         let isLoading = false;
-        let featuredChannelsLoaded = false;
 
-        // DOM elements
         const searchInput = document.getElementById('searchInput');
         const searchButton = document.getElementById('searchButton');
         const videoContainer = document.getElementById('videoContainer');
-        const featuredChannelsContainer = document.getElementById('featuredChannels');
         const loadingSpinner = document.getElementById('loadingSpinner');
         const messageElement = document.getElementById('message');
         const loadMoreBtn = document.getElementById('loadMoreBtn');
         
-        // Modal elements
         const videoModal = new bootstrap.Modal(document.getElementById('videoModal'));
         const videoIframe = document.getElementById('videoIframe');
         const modalVideoTitle = document.getElementById('modalVideoTitle');
@@ -774,7 +145,6 @@
         const commentsLoading = document.getElementById('commentsLoading');
         const commentCount = document.getElementById('commentCount');
         
-        // Channel profile elements
         const channelProfileImage = document.getElementById('channelProfileImage');
         const channelName = document.getElementById('channelName');
         const channelSubscribers = document.getElementById('channelSubscribers');
@@ -782,7 +152,6 @@
         const channelDescription = document.getElementById('channelDescription');
         const viewChannelBtn = document.getElementById('viewChannelBtn');
 
-        // Format numbers for display
         function formatNumber(num) {
             if (num >= 1000000) {
                 return (num / 1000000).toFixed(1) + 'M';
@@ -793,7 +162,6 @@
             return num.toString();
         }
 
-        // Format date to a readable format
         function formatDate(isoDate) {
             const date = new Date(isoDate);
             return date.toLocaleDateString('en-US', { 
@@ -803,22 +171,18 @@
             });
         }
 
-        // Show error message
         function showError(message) {
             messageElement.textContent = message;
             messageElement.style.display = 'block';
             loadingSpinner.style.display = 'none';
         }
 
-        // Hide error message
         function hideError() {
             messageElement.style.display = 'none';
         }
 
-        // Format video duration from ISO 8601 format
         function formatDuration(duration) {
             const match = duration.match(/PT(\d+H)?(\d+M)?(\d+S)?/);
-            
             const hours = (match[1]) ? parseInt(match[1].replace('H', '')) : 0;
             const minutes = (match[2]) ? parseInt(match[2].replace('M', '')) : 0;
             const seconds = (match[3]) ? parseInt(match[3].replace('S', '')) : 0;
@@ -835,7 +199,6 @@
             return formatted;
         }
 
-        // Fetch videos from YouTube API
         async function fetchVideos(query, pageToken = '') {
             if (isLoading) return;
             
@@ -844,9 +207,7 @@
             loadingSpinner.style.display = 'block';
             
             try {
-                // Step 1: Search for videos
                 const searchURL = `https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=12&q=${encodeURIComponent(query)}&type=video&key=${API_KEY}${pageToken ? '&pageToken=' + pageToken : ''}`;
-                
                 const searchResponse = await fetch(searchURL);
                 const searchData = await searchResponse.json();
                 
@@ -862,7 +223,6 @@
                     return;
                 }
                 
-                // Save next page token if available
                 nextPageToken = searchData.nextPageToken || '';
                 if (nextPageToken) {
                     loadMoreBtn.classList.remove('d-none');
@@ -870,10 +230,7 @@
                     loadMoreBtn.classList.add('d-none');
                 }
                 
-                // Get video IDs from search results
                 const videoIds = searchData.items.map(item => item.id.videoId).join(',');
-                
-                // Step 2: Get video details including statistics
                 const videoURL = `https://www.googleapis.com/youtube/v3/videos?part=snippet,statistics,contentDetails&id=${videoIds}&key=${API_KEY}`;
                 const videoResponse = await fetch(videoURL);
                 const videoData = await videoResponse.json();
@@ -882,7 +239,6 @@
                     throw new Error(videoData.error.message || 'Error fetching video details');
                 }
                 
-                // Step 3: Get channel details for profile pictures
                 const channelIds = [...new Set(videoData.items.map(item => item.snippet.channelId))].join(',');
                 const channelURL = `https://www.googleapis.com/youtube/v3/channels?part=snippet&id=${channelIds}&key=${API_KEY}`;
                 const channelResponse = await fetch(channelURL);
@@ -892,18 +248,15 @@
                     throw new Error(channelData.error.message || 'Error fetching channel details');
                 }
                 
-                // Create a map of channel IDs to thumbnails for easy lookup
                 const channelThumbnails = {};
                 channelData.items.forEach(channel => {
                     channelThumbnails[channel.id] = channel.snippet.thumbnails.default.url;
                 });
                 
-                // Clear container if this is a new search (not "load more")
                 if (!pageToken) {
                     videoContainer.innerHTML = '';
                 }
                 
-                // Render videos
                 videoData.items.forEach(video => {
                     const videoId = video.id;
                     const title = video.snippet.title;
@@ -947,7 +300,6 @@
                         </div>
                     `;
                     
-                    // Add click event to open modal with video details
                     videoElement.addEventListener('click', () => {
                         openVideoModal(videoId, title, channelTitle, description, viewCount, likeCount, commentCount, channelId);
                     });
@@ -964,7 +316,6 @@
             }
         }
 
-        // Fetch comments for a video
         async function fetchComments(videoId) {
             commentsLoading.style.display = 'block';
             commentsContainer.innerHTML = '';
@@ -984,34 +335,29 @@
                 }
                 
                 if (data.items && data.items.length > 0) {
+                    commentCount.textContent = `${data.items.length} comments`;
+                    
                     data.items.forEach(item => {
                         const comment = item.snippet.topLevelComment.snippet;
-                        const authorName = comment.authorDisplayName;
-                        const commentText = comment.textDisplay;
-                        const publishedAt = formatDate(comment.publishedAt);
-                        const likeCount = comment.likeCount;
-                        const authorProfileImg = comment.authorProfileImageUrl;
-                        
                         const commentElement = document.createElement('div');
                         commentElement.className = 'comment';
                         commentElement.innerHTML = `
                             <div class="d-flex">
-                                <img src="${authorProfileImg}" class="rounded-circle me-2" width="32" height="32" alt="${authorName}">
+                                <img src="${comment.authorProfileImageUrl}" class="rounded-circle me-2" width="32" height="32" alt="${comment.authorDisplayName}">
                                 <div>
                                     <div class="comment-author d-flex justify-content-between">
-                                        <span>${authorName}</span>
-                                        <small class="text-secondary">${publishedAt}</small>
+                                        <span>${comment.authorDisplayName}</span>
+                                        <small class="text-secondary">${formatDate(comment.publishedAt)}</small>
                                     </div>
-                                    <div>${commentText}</div>
+                                    <div>${comment.textDisplay}</div>
                                     <div class="mt-1">
                                         <small class="text-secondary">
-                                            <i class="fas fa-thumbs-up stats-icon"></i>${likeCount}
+                                            <i class="fas fa-thumbs-up stats-icon"></i>${comment.likeCount}
                                         </small>
                                     </div>
                                 </div>
                             </div>
                         `;
-                        
                         commentsContainer.appendChild(commentElement);
                     });
                 } else {
@@ -1025,423 +371,30 @@
             }
         }
 
-        // Fetch the specific featured channels
-        async function fetchFeaturedChannels() {
-            if (featuredChannelsLoaded) return;
-            
-            try {
-                // Use specific channel IDs for the most famous channels 
-                // eternalhackerbg and m7mdkicking
-                const channelIds = "UCnDaI5t35KS2YlcXUQoGg8w,UCfTtrxDV_CIE5kNPX9vxCPA"; // IDs for eternalhackerbg and m7mdkicking
-                
-                // Manually create the featured channels with information for eternalhackerbg and m7mdkicking
-                const featuredChannels = [
-                    {
-                        id: "UCnDaI5t35KS2YlcXUQoGg8w",
-                        title: "eternalhackerbg",
-                        description: "Channel focused on Blockman Go admin panel",
-                        thumbnailUrl: "https://yt3.googleusercontent.com/ytc/AGliHZs21LRZaXZmxZzDXgCb0G1bTwrk9yZV-3a-NnSw=s176-c-k-c0x00ffffff-no-rj",
-                        subCount: "45K",
-                        videoCount: "62"
-                    },
-                    {
-                        id: "UCfTtrxDV_CIE5kNPX9vxCPA",
-                        title: "m7mdkicking",
-                        description: "Blockman Go expert channel",
-                        thumbnailUrl: "https://yt3.googleusercontent.com/HFNXNe3YWxX-AEkrHRxIUzyaB0raiWEkNW-YzIQPdDZnNnkihh9UM1AyBdJRPcQDPmqHnKrW=s176-c-k-c0x00ffffff-no-rj", 
-                        subCount: "78K",
-                        videoCount: "120"
-                    }
-                ];
-                
-                // Clear container
-                featuredChannelsContainer.innerHTML = '';
-                
-                // Render featured channels
-                featuredChannels.forEach(channel => {
-                    const channelId = channel.id;
-                    const title = channel.title;
-                    const description = channel.description;
-                    const thumbnailUrl = channel.thumbnailUrl;
-                    const subCount = channel.subCount;
-                    const videoCount = channel.videoCount;
-                    
-                    const channelElement = document.createElement('div');
-                    channelElement.className = 'col-md-4 mb-3';
-                    channelElement.innerHTML = `
-                        <div class="channel-card">
-                            <div class="channel-banner"></div>
-                            <span class="hype-badge">FAMOUS</span>
-                            <div class="channel-avatar">
-                                <img src="${thumbnailUrl}" alt="${title}">
-                            </div>
-                            <div class="channel-info">
-                                <h4 class="channel-name">${title}</h4>
-                                <div class="channel-stats">
-                                    <div><i class="fas fa-users me-1"></i>${subCount} subs</div>
-                                    <div><i class="fas fa-video me-1"></i>${videoCount} videos</div>
-                                </div>
-                            </div>
-                        </div>
-                    `;
-                    
-                    // Add click event to show channel profile
-                    channelElement.addEventListener('click', () => {
-                        fetchChannelProfile(channelId);
-                    });
-                    
-                    featuredChannelsContainer.appendChild(channelElement);
-                });
-                
-                featuredChannelsLoaded = true;
-                
-            } catch (error) {
-                console.error('Error fetching featured channels:', error);
-                featuredChannelsContainer.innerHTML = `<div class="col-12 alert alert-danger">Failed to load featured channels: ${error.message}</div>`;
-            }
-        }
-        
-        // Fetch videos from a channel
-        async function fetchChannelVideos(channelId) {
-            const videosContainer = document.getElementById('channelVideosContainer');
-            
-            try {
-                // For featured channels, we use predefined video data to avoid API issues
-                const featuredChannelsVideos = {
-                    "UCnDaI5t35KS2YlcXUQoGg8w": [
-                        {
-                            id: "xbfG3m5ym8I",
-                            title: "BLOCKMAN GO ADMIN PANEL SCRIPT ✓ | ALWAYS WORKING",
-                            thumbnail: "https://i.ytimg.com/vi/xbfG3m5ym8I/mqdefault.jpg",
-                            publishedAt: "2023-11-15",
-                            views: "145K"
-                        },
-                        {
-                            id: "J4aF76xb1Cc",
-                            title: "How To Get Admin Panel In Blockman Go!",
-                            thumbnail: "https://i.ytimg.com/vi/J4aF76xb1Cc/mqdefault.jpg",
-                            publishedAt: "2023-09-20",
-                            views: "94K"
-                        },
-                        {
-                            id: "yXz78BNGrDo",
-                            title: "Admin Panel Trick in Blockman Go (Working 2023)",
-                            thumbnail: "https://i.ytimg.com/vi/yXz78BNGrDo/mqdefault.jpg",
-                            publishedAt: "2023-05-19",
-                            views: "126K"
-                        }
-                    ],
-                    "UCfTtrxDV_CIE5kNPX9vxCPA": [
-                        {
-                            id: "FvsAJcNeAPk",
-                            title: "NEW BLOCKMAN GO ADMIN PANEL - FAST & FREE",
-                            thumbnail: "https://i.ytimg.com/vi/FvsAJcNeAPk/mqdefault.jpg",
-                            publishedAt: "2023-12-01",
-                            views: "218K"
-                        },
-                        {
-                            id: "pTn8VfxUZJc",
-                            title: "Secret Ways to Get Admin in Blockman Go!",
-                            thumbnail: "https://i.ytimg.com/vi/pTn8VfxUZJc/mqdefault.jpg",
-                            publishedAt: "2023-08-05",
-                            views: "183K"
-                        },
-                        {
-                            id: "L8dQ1DdVXzM",
-                            title: "How to Access Admin Panel - Blockman Go Tutorial",
-                            thumbnail: "https://i.ytimg.com/vi/L8dQ1DdVXzM/mqdefault.jpg",
-                            publishedAt: "2023-04-22",
-                            views: "152K"
-                        }
-                    ]
-                };
-                
-                // Clear loading indicator
-                videosContainer.innerHTML = '';
-                
-                // Check if we have predefined videos for this channel
-                if (featuredChannelsVideos[channelId]) {
-                    const videos = featuredChannelsVideos[channelId];
-                    
-                    videos.forEach(video => {
-                        const videoElement = document.createElement('div');
-                        videoElement.className = 'col-md-6 col-lg-4 mb-3';
-                        videoElement.innerHTML = `
-                            <div class="channel-video-card">
-                                <div class="thumbnail-container">
-                                    <img src="${video.thumbnail}" class="img-fluid rounded" alt="${video.title}">
-                                    <div class="play-button">
-                                        <i class="fas fa-play"></i>
-                                    </div>
-                                    <span class="badge bg-dark position-absolute bottom-0 end-0 m-2">5:24</span>
-                                </div>
-                                <div class="channel-video-info">
-                                    <h6 class="video-title mt-2">${video.title}</h6>
-                                    <div class="d-flex justify-content-between">
-                                        <small class="text-secondary">${video.publishedAt}</small>
-                                        <small><i class="fas fa-eye me-1"></i>${video.views}</small>
-                                    </div>
-                                </div>
-                            </div>
-                        `;
-                        
-                        // Add click event to open video
-                        videoElement.addEventListener('click', () => {
-                            window.open(`https://www.youtube.com/watch?v=${video.id}`, '_blank');
-                        });
-                        
-                        videosContainer.appendChild(videoElement);
-                    });
-                } else {
-                    // Try using the YouTube API for other channels
-                    const videosURL = `https://www.googleapis.com/youtube/v3/search?part=snippet&channelId=${channelId}&maxResults=6&order=date&type=video&key=${API_KEY}`;
-                    const response = await fetch(videosURL);
-                    const data = await response.json();
-                    
-                    if (data.error) {
-                        throw new Error(data.error.message || 'Error fetching channel videos');
-                    }
-                    
-                    if (data.items && data.items.length > 0) {
-                        // Get video IDs to fetch additional details like view counts
-                        const videoIds = data.items.map(item => item.id.videoId).join(',');
-                        
-                        // Get detailed video information including statistics
-                        const videoDetailsURL = `https://www.googleapis.com/youtube/v3/videos?part=snippet,statistics,contentDetails&id=${videoIds}&key=${API_KEY}`;
-                        const videoDetailsResponse = await fetch(videoDetailsURL);
-                        const videoDetailsData = await videoDetailsResponse.json();
-                        
-                        if (videoDetailsData.error) {
-                            throw new Error(videoDetailsData.error.message || 'Error fetching video details');
-                        }
-                        
-                        // Create a map of video IDs to their details
-                        const videoDetailsMap = {};
-                        if (videoDetailsData.items) {
-                            videoDetailsData.items.forEach(video => {
-                                videoDetailsMap[video.id] = {
-                                    viewCount: video.statistics.viewCount ? formatNumber(parseInt(video.statistics.viewCount)) : '0',
-                                    duration: video.contentDetails ? formatDuration(video.contentDetails.duration) : '--'
-                                };
-                            });
-                        }
-                        
-                        data.items.forEach(item => {
-                            const videoId = item.id.videoId;
-                            const title = item.snippet.title;
-                            const thumbnailUrl = item.snippet.thumbnails.medium.url;
-                            const publishedAt = formatDate(item.snippet.publishedAt);
-                            const videoDetails = videoDetailsMap[videoId] || { viewCount: '0', duration: '--' };
-                            
-                            const videoElement = document.createElement('div');
-                            videoElement.className = 'col-md-6 col-lg-4 mb-3';
-                            videoElement.innerHTML = `
-                                <div class="channel-video-card">
-                                    <div class="thumbnail-container">
-                                        <img src="${thumbnailUrl}" class="img-fluid rounded" alt="${title}">
-                                        <div class="play-button">
-                                            <i class="fas fa-play"></i>
-                                        </div>
-                                        <span class="badge bg-dark position-absolute bottom-0 end-0 m-2">${videoDetails.duration}</span>
-                                    </div>
-                                    <div class="channel-video-info">
-                                        <h6 class="video-title mt-2">${title}</h6>
-                                        <div class="d-flex justify-content-between">
-                                            <small class="text-secondary">${publishedAt}</small>
-                                            <small><i class="fas fa-eye me-1"></i>${videoDetails.viewCount}</small>
-                                        </div>
-                                    </div>
-                                </div>
-                            `;
-                            
-                            // Add click event to open video
-                            videoElement.addEventListener('click', () => {
-                                window.open(`https://www.youtube.com/watch?v=${videoId}`, '_blank');
-                            });
-                            
-                            videosContainer.appendChild(videoElement);
-                        });
-                    } else {
-                        videosContainer.innerHTML = '<div class="col-12 text-center"><p>No videos found for this channel.</p></div>';
-                    }
-                }
-            } catch (error) {
-                console.error('Error fetching channel videos:', error);
-                videosContainer.innerHTML = `<div class="col-12 alert alert-danger">Failed to load channel videos: ${error.message}</div>`;
-            }
-        }
-        
-        // Fetch channel profile information
-        async function fetchChannelProfile(channelId) {
-            try {
-                // For famous channels, we use predefined data to avoid API issues
-                const featuredChannelsMap = {
-                    "UCnDaI5t35KS2YlcXUQoGg8w": {
-                        id: "UCnDaI5t35KS2YlcXUQoGg8w",
-                        snippet: {
-                            title: "eternalhackerbg",
-                            description: "Channel focused on Blockman Go admin panel and gaming tutorials. Subscribe for the latest gameplay and tips.",
-                            thumbnails: {
-                                medium: {
-                                    url: "https://yt3.googleusercontent.com/ytc/AGliHZs21LRZaXZmxZzDXgCb0G1bTwrk9yZV-3a-NnSw=s176-c-k-c0x00ffffff-no-rj"
-                                }
-                            },
-                            bannerUrl: "https://yt3.googleusercontent.com/TcXWST8YP0L8WpPEQPH2DW_AqKVSxS-Gqk5nGBdWvF6BKATiEqOgBB934pRK_5EH2C5-K_lT=w2560-fcrop64=1,00005a57ffffa5a8-k-c0xffffffff-no-nd-rj"
-                        },
-                        statistics: {
-                            subscriberCount: "45000",
-                            videoCount: "62",
-                            viewCount: "1250000"
-                        }
-                    },
-                    "UCfTtrxDV_CIE5kNPX9vxCPA": {
-                        id: "UCfTtrxDV_CIE5kNPX9vxCPA",
-                        snippet: {
-                            title: "m7mdkicking",
-                            description: "The best Blockman Go admin panel channel with gameplay, tutorials and tips for all players. Regular updates on new features and settings.",
-                            thumbnails: {
-                                medium: {
-                                    url: "https://yt3.googleusercontent.com/HFNXNe3YWxX-AEkrHRxIUzyaB0raiWEkNW-YzIQPdDZnNnkihh9UM1AyBdJRPcQDPmqHnKrW=s176-c-k-c0x00ffffff-no-rj"
-                                }
-                            },
-                            bannerUrl: "https://yt3.googleusercontent.com/vCDy0ydGPGq9SnXhDnQJK3wUC-9KfJ75aKF9JY5uo9eJnXTABRN6ZxGcxdFXdsxZ8k09vZ8K=w2560-fcrop64=1,00005a57ffffa5a8-k-c0xffffffff-no-nd-rj"
-                        },
-                        statistics: {
-                            subscriberCount: "78000",
-                            videoCount: "120",
-                            viewCount: "3500000"
-                        }
-                    }
-                };
-                
-                // Variable to store the channel to be displayed
-                let channel;
-                
-                // Check if it's one of the predefined famous channels
-                if (featuredChannelsMap[channelId]) {
-                    channel = featuredChannelsMap[channelId];
-                } else {
-                    // Try to fetch from YouTube API if not a predefined channel
-                    const channelURL = `https://www.googleapis.com/youtube/v3/channels?part=snippet,statistics,brandingSettings&id=${channelId}&key=${API_KEY}`;
-                    const response = await fetch(channelURL);
-                    const data = await response.json();
-                    
-                    if (data.error) {
-                        throw new Error(data.error.message || 'Error fetching channel profile');
-                    }
-                    
-                    if (!data.items || data.items.length === 0) {
-                        throw new Error('Channel not found');
-                    }
-                    
-                    channel = data.items[0];
-                }
-                
-                // Create a modal to show the channel profile
-                const modalHTML = `
-                    <div class="modal fade" id="channelProfileModal" tabindex="-1">
-                        <div class="modal-dialog modal-lg modal-dialog-centered">
-                            <div class="modal-content custom-modal">
-                                <div class="modal-header">
-                                    <h5 class="modal-title">Channel Profile</h5>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                </div>
-                                <div class="modal-body">
-                                    <div class="channel-profile-section">
-                                        <div class="channel-banner mb-4" style="background-image: url('${channel.snippet.bannerUrl || "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPjxkZWZzPjxsaW5lYXJHcmFkaWVudCBpZD0iZ3JhZCIgeDI9IjEwMCUiPjxzdG9wIG9mZnNldD0iMCUiIHN0b3AtY29sb3I9IiM1YTMzZjAiLz48c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiM0M2M2YWMiLz48L2xpbmVhckdyYWRpZW50PjwvZGVmcz48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSJ1cmwoI2dyYWQpIi8+PC9zdmc+"}');"></div>
-                                        <div class="channel-header">
-                                            <div class="channel-large-avatar">
-                                                <img src="${channel.snippet.thumbnails.medium.url}" alt="${channel.snippet.title}">
-                                            </div>
-                                            <div class="channel-profile-info">
-                                                <h3>${channel.snippet.title}</h3>
-                                                <div class="channel-profile-stats">
-                                                    <div><i class="fas fa-users me-1"></i>${formatNumber(parseInt(channel.statistics.subscriberCount || '0'))} subscribers</div>
-                                                    <div><i class="fas fa-video me-1"></i>${formatNumber(parseInt(channel.statistics.videoCount || '0'))} videos</div>
-                                                    <div><i class="fas fa-eye me-1"></i>${formatNumber(parseInt(channel.statistics.viewCount || '0'))} views</div>
-                                                </div>
-                                                <a href="https://www.youtube.com/channel/${channelId}" target="_blank" class="view-channel-btn mt-2">
-                                                    View on YouTube <i class="fas fa-external-link-alt ms-1"></i>
-                                                </a>
-                                            </div>
-                                        </div>
-                                        <div class="mt-4">
-                                            <h5>Description</h5>
-                                            <div class="channel-description" style="max-height: 200px;">
-                                                ${channel.snippet.description ? channel.snippet.description.replace(/\n/g, '<br>') : 'No description available.'}
-                                            </div>
-                                        </div>
-                                    </div>
-                                    
-                                    <div class="mt-4">
-                                        <h5>Latest Videos</h5>
-                                        <div id="channelVideosContainer" class="row mt-3">
-                                            <div class="text-center">
-                                                <div class="loading-animation" style="width: 30px; height: 30px;"></div>
-                                                <p>Loading videos...</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                `;
-                
-                // Remove existing modal if any
-                const existingModal = document.getElementById('channelProfileModal');
-                if (existingModal) {
-                    existingModal.remove();
-                }
-                
-                // Add modal to the document
-                document.body.insertAdjacentHTML('beforeend', modalHTML);
-                
-                // Show modal
-                const channelModal = new bootstrap.Modal(document.getElementById('channelProfileModal'));
-                channelModal.show();
-                
-                // Fetch latest videos from this channel
-                fetchChannelVideos(channelId);
-                
-            } catch (error) {
-                console.error('Error fetching channel profile:', error);
-                alert(`Failed to load channel profile: ${error.message}`);
-            }
-        }
-        
-        // Open modal with video details
         function openVideoModal(videoId, title, channelTitle, description, viewCount, likeCount, commentCount, channelId) {
             modalVideoTitle.textContent = title;
             
-            // Update video stats
             modalVideoStats.innerHTML = `
                 <div><i class="fas fa-eye stats-icon"></i>${viewCount} views</div>
                 <div><i class="fas fa-thumbs-up stats-icon"></i>${likeCount} likes</div>
                 <div><i class="fas fa-comment stats-icon"></i>${commentCount} comments</div>
             `;
             
-            // Format description with line breaks and links
             const formattedDescription = description
                 .replace(/\n/g, '<br>')
                 .replace(/(https?:\/\/[^\s]+)/g, '<a href="$1" target="_blank" class="text-info">$1</a>');
             
             modalVideoDescription.innerHTML = formattedDescription;
             
-            // Fetch and update channel details for the video
             fetchChannelDetails(channelId);
             
-            // Set iframe src
             videoIframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=1`;
             
-            // Fetch comments
             fetchComments(videoId);
             
-            // Show modal
             videoModal.show();
         }
 
-        // Function to fetch channel details for the video modal
         async function fetchChannelDetails(channelId) {
             try {
                 const channelURL = `https://www.googleapis.com/youtube/v3/channels?part=snippet,statistics&id=${channelId}&key=${API_KEY}`;
@@ -1455,14 +408,12 @@
                 if (data.items && data.items.length > 0) {
                     const channel = data.items[0];
                     
-                    // Update channel info in the modal
                     channelProfileImage.src = channel.snippet.thumbnails.default.url;
                     channelName.textContent = channel.snippet.title;
                     channelSubscribers.textContent = formatNumber(parseInt(channel.statistics.subscriberCount || '0'));
                     channelVideos.textContent = formatNumber(parseInt(channel.statistics.videoCount || '0'));
                     channelDescription.textContent = channel.snippet.description || 'No description available.';
                     
-                    // Set up channel view button
                     viewChannelBtn.addEventListener('click', () => {
                         window.open(`https://www.youtube.com/channel/${channelId}`, '_blank');
                     });
@@ -1472,39 +423,9 @@
             }
         }
 
-        // Function to allow users to view channel profiles directly through the website
-        function viewChannelByUsername(username) {
-            try {
-                // Channel username to ID mapping
-                const channelUsernames = {
-                    "eternalhackerbg": "UCnDaI5t35KS2YlcXUQoGg8w",
-                    "m7mdkicking": "UCfTtrxDV_CIE5kNPX9vxCPA"
-                };
-                
-                // Check if the username is in our list
-                if (channelUsernames[username]) {
-                    fetchChannelProfile(channelUsernames[username]);
-                } else {
-                    // If it's not in the list, try to search by username
-                    alert("Searching for channel: " + username);
-                    // Here you would add code to fetch the channel ID by username
-                    // Since this requires a different API, we use predefined channels for now
-                }
-            } catch (error) {
-                console.error("Error fetching channel by username:", error);
-                alert("Error fetching the channel. Please try again later.");
-            }
-        }
-        
-        // Event Listeners
         document.addEventListener('DOMContentLoaded', () => {
-            // Initial load
             fetchVideos(currentQuery);
             
-            // Load featured channels
-            fetchFeaturedChannels();
-            
-            // Search button click
             searchButton.addEventListener('click', () => {
                 currentQuery = searchInput.value.trim();
                 if (currentQuery) {
@@ -1513,7 +434,6 @@
                 }
             });
             
-            // Enter key in search input
             searchInput.addEventListener('keypress', (e) => {
                 if (e.key === 'Enter') {
                     currentQuery = searchInput.value.trim();
@@ -1524,14 +444,12 @@
                 }
             });
             
-            // Load more button
             loadMoreBtn.addEventListener('click', () => {
                 if (nextPageToken) {
                     fetchVideos(currentQuery, nextPageToken);
                 }
             });
             
-            // Close modal event to stop video
             document.getElementById('videoModal').addEventListener('hidden.bs.modal', () => {
                 videoIframe.src = '';
             });
